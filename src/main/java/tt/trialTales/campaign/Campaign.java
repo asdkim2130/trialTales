@@ -1,6 +1,8 @@
 package tt.trialTales.campaign;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +25,8 @@ public class Campaign {
     @Column(nullable = false)
     private String status; // "모집 중", "모집 완료"
 
+    @Min(1) // 최소 모집 인원
+    @Max(10) // 최대 모집 인원
     @Column(nullable = false)
     private int recruitmentLimit;
 
@@ -40,7 +44,7 @@ public class Campaign {
         this.recruitmentLimit = recruitmentLimit;
     }
 
-    // Getter, Setter
+    // Getter 및 Setter
     public Long getId() {
         return id;
     }
@@ -90,6 +94,9 @@ public class Campaign {
     }
 
     public void setRecruitmentLimit(int recruitmentLimit) {
+        if (recruitmentLimit < 1 || recruitmentLimit > 10) {
+            throw new IllegalArgumentException("모집 인원은 최소 1명에서 최대 10명이어야 합니다.");
+        }
         this.recruitmentLimit = recruitmentLimit;
     }
 }
