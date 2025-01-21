@@ -29,4 +29,9 @@ public class ApplicationRestController {
         return applicationService.findAll(userId);
     }
 
+    @DeleteMapping("applications/{applicationId}")
+    public void deleteApplication(@PathVariable (name = "applicationId") Long id){
+        applicationService.delete(id);
+    }
+
 }
