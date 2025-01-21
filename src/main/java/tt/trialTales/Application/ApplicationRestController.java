@@ -34,7 +34,7 @@ public class ApplicationRestController {
         applicationService.delete(id);
     }
 
-    @PutMapping("applications/{applicationId}")
+    @PatchMapping("applications/{applicationId}")
     public ApplicationResponse updateStatus(@PathVariable (name = "applicationId") Long id){
         return applicationService.update(id);
     }
