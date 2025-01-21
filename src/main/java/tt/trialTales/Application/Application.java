@@ -34,7 +34,7 @@ public class Application {
         this.campaignId = campaignId;
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
-        this.isApproved = isApproved;
+        this.isApproved = false;
     }
 
     public Application(String snsUrl) {
@@ -63,5 +63,9 @@ public class Application {
 
     public Boolean getApproved() {
         return isApproved;
+    }
+
+    public void changeStatus(){
+        this.isApproved = !this.isApproved;
     }
 }

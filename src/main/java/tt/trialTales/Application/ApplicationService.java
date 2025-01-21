@@ -52,6 +52,18 @@ public class ApplicationService {
         applicationRepository.delete(application);
     }
 
+    //신청 상태 변경(isApproved false -> true, 관리자권한 필요)
+    @Transactional
+    public ApplicationResponse update(Long id){
+        Application application = applicationRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다.")
+        );
+
+        application.changeStatus();
+
+        return createResponse(application);
+    }
+
 
     //ApplicationResponse return 함수
     public ApplicationResponse createResponse(Application application){
