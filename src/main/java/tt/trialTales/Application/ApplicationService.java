@@ -1,7 +1,11 @@
 package tt.trialTales.Application;
 
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.NoSuchElementException;
 
+@Service
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
@@ -30,6 +34,13 @@ public class ApplicationService {
     }
 
     //사용자별 캠페인 신청 조회
+    public List<ApplicationResponse> findAll(Long userId){
+        return applicationRepository.findByUserId(userId)
+                .stream()
+                .map(this::createResponse)
+                .toList();
+    }
+
 
     public ApplicationResponse createResponse(Application application){
         return new ApplicationResponse(application.getId(),

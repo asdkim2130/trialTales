@@ -3,6 +3,8 @@ package tt.trialTales.Application;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ApplicationRestController {
 
@@ -20,6 +22,11 @@ public class ApplicationRestController {
     @GetMapping("applications/{applicationId}")
     public ApplicationResponse findApplications(@PathVariable (name = "applicationId") Long id){
         return applicationService.find(id);
+    }
+
+    @GetMapping("applications/{userId}")
+    public List<ApplicationResponse> findAllUserApplications(@PathVariable Long userId){
+        return applicationService.findAll(userId);
     }
 
 }
