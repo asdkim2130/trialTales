@@ -12,4 +12,17 @@ public class CampaignService {
     }
 
 
+    // 캠페인 생성
+    public Campaign createCampaign(CampaignRequestDto requestDto) {
+        Campaign campaign = new Campaign(requestDto.campaignName(),
+                requestDto.description(),
+                requestDto.startDate(),
+                requestDto.endDate(),
+                requestDto.status(),
+                requestDto.recruitmentLimit());
+
+        return campaignRepository.save(campaign);
+    }
+
+
 }
