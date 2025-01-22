@@ -2,9 +2,13 @@ package tt.trialTales.Application;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import tt.JwtProvider;
 import tt.trialTales.member.Member;
 import tt.trialTales.member.MemberRepository;
+import tt.trialTales.member.MemberService;
+import tt.trialTales.member.Role;
 
+import javax.management.relation.Relation;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -13,10 +17,14 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
-    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider) {
         this.applicationRepository = applicationRepository;
         this.memberRepository = memberRepository;
+        this.memberService = memberService;
+        this.jwtProvider = jwtProvider;
     }
 
     //신청 생성
@@ -28,7 +36,7 @@ public class ApplicationService {
                 () -> new NoSuchElementException("유효하지 않은 사용자입니다.")
         );
 
-        return  new ApplicationResponse(application.getId(),
+        return new ApplicationResponse(application.getId(),
                 member,
                 application.getCampaignId(),
                 application.getSnsUrl(),
@@ -55,20 +63,27 @@ public class ApplicationService {
 
     //신청 삭제(관리자권한 필요)
     @Transactional
-    public void delete(Long id) {
-        Application application = applicationRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("유효하지 않은 신청입니다.")
-        );
+    public void delete(Long id, Member loginMember) {
 
-        applicationRepository.delete(application);
+
+        if (loginMember.getRole().equals(Role.ADMIN)) {
+            Application application = applicationRepository.findById(id).orElseThrow(
+                    () -> new NoSuchElementException("유효하지 않은 신청입니다.")
+            );
+            applicationRepository.delete(application);
+        } else throw new NoSuchElementException("삭제는 관리자 권한입니다.");
     }
 
     //신청 상태 변경(isApproved false -> true, 관리자권한 필요)
     @Transactional
-    public ApplicationResponse update(Long id) {
-        Application application = applicationRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다.")
-        );
+    public ApplicationResponse update(Long id, Member loginMember) {
+
+        if (!loginMember.getRole().equals(Role.ADMIN)) {
+            throw new NoSuchElementException("수정은 관리자 권합니다.");
+        }
+
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다."));
 
         application.changeStatus();
 
@@ -76,14 +91,15 @@ public class ApplicationService {
     }
 
 
-    //ApplicationResponse return 함수
-    public ApplicationResponse createResponse(Application application) {
-        return new ApplicationResponse(application.getId(),
-                application.getMemberId(),
-                application.getCampaignId(),
-                application.getSnsUrl(),
-                application.getApplicationDate(),
-                application.getApproved());
-    }
+
+        //ApplicationResponse return 함수
+        public ApplicationResponse createResponse(Application application) {
+            return new ApplicationResponse(application.getId(),
+                    application.getMemberId(),
+                    application.getCampaignId(),
+                    application.getSnsUrl(),
+                    application.getApplicationDate(),
+                    application.getApproved());
+}
 
 }
