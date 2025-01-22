@@ -2,6 +2,7 @@ package tt.trialTales.Application;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import tt.trialTales.member.Member;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,10 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member memberId;
+
     private Long campaignId;
 
     @Column(nullable = false)
@@ -28,9 +32,8 @@ public class Application {
     protected Application() {
     }
 
-    public Application(Long id, Long userId, Long campaignId, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
+    public Application(Long id, Long campaignId, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
         this.id = id;
-        this.userId = userId;
         this.campaignId = campaignId;
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
@@ -45,8 +48,8 @@ public class Application {
         return id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Member getMemberId() {
+        return memberId;
     }
 
     public Long getCampaignId() {
