@@ -42,8 +42,8 @@ public class Review {
         return campaignId;
     }
 
-    public String getReviewContent() {
-        return reviewContent;
+    public String getContent() {
+        return content;
     }
 
     public int getRating() {

@@ -10,7 +10,7 @@ public record ReviewResponse(
         this(
                 review.getUserId(),
                 review.getCampaignId(),
-                review.getReviewContent(),
+                review.getContent(),
                 review.getRating());
     }
 }
