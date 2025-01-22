@@ -1,4 +1,4 @@
-package tt.trialTales.review;
+package tt.review;
 
 import org.springframework.web.bind.annotation.*;
 

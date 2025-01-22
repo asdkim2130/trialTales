@@ -1,4 +1,4 @@
-package tt.trialTales.review;
+package tt.review;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
