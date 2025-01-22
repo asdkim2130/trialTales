@@ -1,4 +1,4 @@
-package tt.review;
+package tt.trialTales.review;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

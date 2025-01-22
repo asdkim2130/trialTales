@@ -1,4 +1,4 @@
-package tt.review;
+package tt.trialTales.review;
 
 public record ReviewResponse(
         Long id,

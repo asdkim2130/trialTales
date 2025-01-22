@@ -1,4 +1,4 @@
-package tt.review;
+package tt.trialTales.review;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
