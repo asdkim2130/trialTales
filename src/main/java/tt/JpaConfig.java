@@ -1,4 +1,4 @@
-package tt.trialTales;
+package tt;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
