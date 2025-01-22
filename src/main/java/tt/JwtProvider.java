@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import tt.trialTales.member.Role;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
@@ -40,13 +41,14 @@ public class JwtProvider {
     }
 
     // 토큰을 만들어 내는 함수
-    public String createToken(String payload) {
+    public String createToken(String payload, Role role) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + this.expirationInMilliseconds);
         Claims claims = Jwts.claims()
                 .setSubject(payload)       // "sub": "abc@gmail.com"
                 .setIssuedAt(now)          // "iat": 1516239022
                 .setExpiration(expiration);// "exp": 1516249022
+        claims.put("role", role);
         return Jwts.builder()
                 .setClaims(claims)
                 .signWith(secretKey)

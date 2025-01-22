@@ -19,13 +19,17 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private Role role; // 사용자 권한 (USER, ADMIN)
+
     protected Member() {
     }
 
-    public Member(String username, String password, String nickname) {
+    public Member(String username, String password, String nickname, Role role) {
         this.username = username;
         this.password = password;
         this.nickname = (nickname == null) ? username : nickname; // nickname이 없으면 username으로 설정
+        this.role = role != null ? role : Role.USER; // 기본 권한은 USER
     }
 
     public Long getId() {
@@ -42,6 +46,10 @@ public class Member {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public boolean authenticate(String rawPassword) {
