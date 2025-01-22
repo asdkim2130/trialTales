@@ -1,6 +1,8 @@
 package tt;
 
 import org.springframework.stereotype.Component;
+import tt.trialTales.member.Member;
+import tt.trialTales.member.MemberService;
 
 @Component
 public class LoginMemberResolver {
@@ -8,17 +10,20 @@ public class LoginMemberResolver {
     public static final String INVALID_TOKEN_MESSAGE = "로그인 정보가 유효하지 않습니다";
 
     private final JwtProvider jwtProvider;
+    private final MemberService memberService;
 
-    public LoginMemberResolver(JwtProvider jwtProvider) {
+    public LoginMemberResolver(JwtProvider jwtProvider, MemberService memberService) {
         this.jwtProvider = jwtProvider;
+        this.memberService = memberService;
     }
 
-    public String resolveMemberFromToken(String bearerToken) {
+    public Member resolveMemberFromToken(String bearerToken) {
         String token = extractToken(bearerToken);
         if (!jwtProvider.isValidToken(token)) {
             throw new IllegalArgumentException(INVALID_TOKEN_MESSAGE);
         }
-        return jwtProvider.getSubject(token);
+        String username = jwtProvider.getSubject(token);
+        return memberService.findByUsername(username);
     }
 
     private String extractToken(String bearerToken) {
