@@ -17,74 +17,59 @@ public class MemberService {
         this.jwtProvider = jwtProvider;
     }
 
-    /**
-     * 회원을 생성하는 메서드
-     *
-     * @param request 회원 생성 요청 정보 (username, password, nickname)
-     */
+    // 회원 가입 처리 메서드
     public void create(CreateMemberRequest request) {
-        // 비밀번호는 SHA-256으로 암호화하여 저장
+        Role role = request.role() != null ? request.role() : Role.USER; // 기본은 USER
         memberRepository.save(new Member(
                 request.username(),
-                SecurityUtils.sha256Encrypt(request.password()),
-                request.nickname()));
+                SecurityUtils.sha256Encrypt(request.password()),  // 비밀번호 암호화
+                request.nickname(),
+                role
+        ));
     }
 
-    /**
-     * 로그인 요청을 처리하는 메서드
-     *
-     * @param request 로그인 요청 정보 (username, password)
-     * @return LoginResponse 로그인 응답 정보 (accessToken)
-     */
+    // 로그인 처리 메서드
     public LoginResponse login(LoginRequest request) {
-        // 사용자가 존재하는지 확인
+        // 사용자 정보 확인 후 로그인 처리
         Member member = memberRepository.findByUsername(request.username())
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다."));
 
-        // 비밀번호 확인
-        if (!member.authenticate(request.password())) {
+        if (!member.authenticate(request.password())) {  // 비밀번호 확인
             throw new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다.");
         }
 
-        // 로그인 성공 시 JWT 토큰 생성하여 반환
-        return new LoginResponse(jwtProvider.createToken(member.getUsername()));
+        // JWT 토큰 생성 및 반환
+        return new LoginResponse(jwtProvider.createToken(member.getUsername(), member.getRole()));
     }
 
-    /**
-     * 회원 탈퇴를 처리하는 메서드
-     *
-     * @param username 탈퇴할 회원의 username
-     */
-    public void deleteMember(String username) {
-        // username으로 회원을 찾아서 삭제
-        Member member = findByUsername(username);
-        memberRepository.delete(member);
+    // 회원 탈퇴 처리 메서드
+    public void deleteMember(String username, Member requestingMember) {
+        // 관리자만 다른 사용자를 탈퇴시킬 수 있음
+        if (requestingMember.getRole() == Role.ADMIN) {
+            Member member = findByUsername(username); // 회원 찾기
+            memberRepository.delete(member);  // 회원 삭제
+        } else {
+            // 일반 사용자는 자기 자신만 탈퇴할 수 있음
+            if (!requestingMember.getUsername().equals(username)) {
+                throw new IllegalArgumentException("자신의 계정만 탈퇴할 수 있습니다.");
+            }
+            memberRepository.delete(requestingMember);  // 자신 삭제
+        }
     }
 
-    /**
-     * 사용자의 닉네임을 수정하는 메서드
-     *
-     * @param username 사용자의 username (토큰에서 추출)
-     * @param newNickname 새로운 닉네임
-     */
-    public void updateNickname(String username, String newNickname) {
-        // username으로 회원을 찾음
-        Member member = findByUsername(username);
+    // 닉네임 수정 처리 메서드
+    public void updateNickname(String username, String newNickname, Member requestingMember) {
+        // 관리자나 본인만 닉네임을 변경할 수 있음
+        if (requestingMember.getRole() == Role.USER && !requestingMember.getUsername().equals(username)) {
+            throw new IllegalArgumentException("본인만 닉네임을 변경할 수 있습니다.");
+        }
 
-        // 새로운 닉네임을 설정
-        member = new Member(member.getUsername(), member.getPassword(), newNickname);
-
-        // 수정된 회원 정보 저장
-        memberRepository.save(member);
+        Member member = findByUsername(username);  // 회원 정보 조회
+        member = new Member(member.getUsername(), member.getPassword(), newNickname, member.getRole());
+        memberRepository.save(member);  // 닉네임 업데이트
     }
 
-    /**
-     * username으로 회원을 찾는 메서드
-     *
-     * @param username 사용자 이름
-     * @return Member 객체 (회원 정보)
-     * @throws NoSuchElementException 회원을 찾을 수 없을 경우 예외 발생
-     */
+    // 사용자 이름으로 회원을 찾는 메서드
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다 username: " + username));

@@ -29,22 +29,17 @@ public class MemberRestController {
 
     // 회원 탈퇴 API
     @DeleteMapping("/members")
-    public void delete(@RequestHeader("Authorization") String token) {
-        // 토큰에서 username 추출
+    public void delete(@RequestHeader("Authorization") String token, @RequestParam String username) {
+        // 토큰에서 회원 정보 추출 후 탈퇴 처리
         Member member = loginMemberResolver.resolveMemberFromToken(token);
-        String username = member.getUsername(); // username을 얻기
-
-        memberService.deleteMember(username);  // 회원 탈퇴 처리
+        memberService.deleteMember(username, member);
     }
 
     // 닉네임 수정 API
     @PutMapping("/members/nickname")
-    public void updateNickname(@RequestHeader(value = "Authorization") String token, @RequestBody String newNickname) {
-        // 토큰에서 username 추출
+    public void updateNickname(@RequestHeader("Authorization") String token, @RequestBody String newNickname) {
+        // 토큰에서 회원 정보 추출 후 닉네임 수정 처리
         Member member = loginMemberResolver.resolveMemberFromToken(token);
-        String username = member.getUsername(); // username을 얻기
-
-        // 닉네임 변경 처리
-        memberService.updateNickname(username, newNickname);
+        memberService.updateNickname(member.getUsername(), newNickname, member);
     }
 }
