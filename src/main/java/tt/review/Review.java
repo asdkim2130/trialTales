@@ -58,5 +58,10 @@ public class Review {
         return updatedAt;
     }
 
-
+    public void update(Long userId, Long campaignId, String content, int rating) {
+        this.userId = userId;
+        this.campaignId = campaignId;
+        this.content = content;
+        this.rating = rating;
+    }
 }

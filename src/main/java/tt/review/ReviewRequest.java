@@ -3,7 +3,15 @@ package tt.review;
 public record ReviewRequest(
         Long userId,
         Long campaignId,
-        String reviewContent,
+        String content,
         int rating
 ) {
+    public ReviewRequest(Review review) {
+    this(
+
+            review.getUserId(),
+            review.getCampaignId(),
+            review.getContent(),
+            review.getRating());
+}
 }
