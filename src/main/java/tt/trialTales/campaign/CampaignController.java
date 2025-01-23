@@ -16,12 +16,10 @@ import java.util.Optional;
 public class CampaignController {
 
     private final CampaignService campaignService;
-    private final MemberService memberService;
     private final MemberRepository memberRepository;
 
     public CampaignController(CampaignService campaignService, MemberService memberService, MemberRepository memberRepository) {
         this.campaignService = campaignService;
-        this.memberService = memberService;
         this.memberRepository = memberRepository;
     }
 
