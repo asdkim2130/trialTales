@@ -1,17 +1,24 @@
 package tt.trialTales.review;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import tt.LoginMemberResolver;
+import tt.trialTales.member.Member;
 
 import java.util.List;
 
 @RestController
 public class ReviewController {
     private final ReviewService reviewService;
+    private final LoginMemberResolver loginMemberResolver;
+    private ReviewRequest reviewRequest;
 
     //**생성자 주입
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, LoginMemberResolver loginMemberResolver,ReviewRequest reviewRequest) {
         this.reviewService = reviewService;
+        this.loginMemberResolver = loginMemberResolver;
+        this.reviewRequest = reviewRequest;
     }
 
     //**리뷰작성 api
@@ -32,14 +39,22 @@ public class ReviewController {
 
     //**리뷰 삭제 api
     @DeleteMapping("/reviews/{reviewId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReview(@PathVariable Long reviewId) {
-        reviewService.deleteReview(reviewId);
+    public void deleteReview(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
+            @PathVariable Long reviewId,
+            @RequestBody ReviewRequest reviewRequest) {
+        this.reviewRequest = reviewRequest;
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
+        reviewService.deleteReview(reviewId,member);
     }
 
     //**리뷰 수정 api
     @PutMapping("/reviews/{reviewId}")
-    void updateReview(@PathVariable Long reviewId, @RequestBody ReviewRequest reviewRequest) {
-        reviewService.update(reviewId, reviewRequest);
+    void updateReview(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
+            @PathVariable Long reviewId,
+            @RequestBody ReviewRequest reviewRequest) {
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
+        reviewService.update(reviewId, reviewRequest,member);
     }
 }

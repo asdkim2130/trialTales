@@ -1,11 +1,9 @@
 package tt.trialTales.review;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import tt.trialTales.campaign.Campaign;
 
 import java.time.LocalDateTime;
 
@@ -18,17 +16,22 @@ public class Review {
     private Long campaignId;
     private String content;
     private int rating;
+    @ManyToOne
+    private Campaign campaign;
     @CreatedDate
     private LocalDateTime reviewDate;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Review(Long userId, Long campaignId, String content, int rating) {
+    public Review(Long userId, Long campaignId, String content, int rating,Campaign campaign) {
         this.userId = userId;
         this.campaignId = campaignId;
         this.content = content;
         this.rating = rating;
+        this.campaign = campaign;
     }
+
+
 
     public Long getId() {
         return id;
@@ -58,10 +61,15 @@ public class Review {
         return updatedAt;
     }
 
-    public void update(Long userId, Long campaignId, String content, int rating) {
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void update(Long userId, Long campaignId, String content, int rating, Campaign campaign ) {
         this.userId = userId;
         this.campaignId = campaignId;
         this.content = content;
         this.rating = rating;
+        this.campaign = campaign;
     }
 }
