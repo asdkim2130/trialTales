@@ -2,6 +2,8 @@ package tt.trialTales.campaign;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import tt.trialTales.member.Member;
+import tt.trialTales.member.MemberRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,24 +13,31 @@ import java.util.Optional;
 public class CampaignService {
 
     private final CampaignRepository campaignRepository;
+    private final MemberRepository memberRepository;
 
-    public CampaignService(CampaignRepository campaignRepository) {
+    public CampaignService(CampaignRepository campaignRepository, MemberRepository memberRepository) {
         this.campaignRepository = campaignRepository;
+        this.memberRepository = memberRepository;
     }
 
     // 캠페인 생성
-    public Campaign createCampaign(CampaignRequestDto requestDto) {
+    public Campaign createCampaign(Long memberId, CampaignRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다: " + memberId));
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endDate = now.plusDays(7);
 
         Campaign campaign = new Campaign(
+                member, // 캠페인을 생성한 멤버
                 requestDto.campaignName(),
                 requestDto.description(),
-                now, // 시작 날짜는 등록 날짜
-                endDate, // 종료 날짜는 등록 날짜 + 7일
+                now, // 시작 날짜
+                endDate, // 종료 날짜
                 "모집 중",
                 requestDto.recruitmentLimit()
         );
+
         return campaignRepository.save(campaign);
     }
 

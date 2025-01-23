@@ -1,9 +1,13 @@
 package tt.trialTales.campaign;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import tt.trialTales.Application.Application;
+import tt.trialTales.member.Member;
+import tt.trialTales.review.Review;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Campaign {
@@ -11,6 +15,10 @@ public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member; // 캠페인을 생성한 사용자
 
     @Column(nullable = false)
     private String campaignName;
@@ -25,17 +33,13 @@ public class Campaign {
     @Column(nullable = false)
     private String status; // "모집 중", "모집 완료"
 
-    @Min(1) // 최소 모집 인원
-    @Max(10) // 최대 모집 인원
     @Column(nullable = false)
     private int recruitmentLimit;
 
-    // 기본 생성자
     protected Campaign() {}
 
-    // 모든 필드 생성자
-    public Campaign(String campaignName, String description, LocalDateTime startDate,
-                    LocalDateTime endDate, String status, int recruitmentLimit) {
+    public Campaign(Member member, String campaignName, String description, LocalDateTime startDate, LocalDateTime endDate, String status, int recruitmentLimit) {
+        this.member = member;
         this.campaignName = campaignName;
         this.description = description;
         this.startDate = startDate;
@@ -44,9 +48,12 @@ public class Campaign {
         this.recruitmentLimit = recruitmentLimit;
     }
 
-    // Getter 및 Setter
     public Long getId() {
         return id;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public String getCampaignName() {
@@ -69,16 +76,8 @@ public class Campaign {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
     public LocalDateTime getEndDate() {
         return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
     }
 
     public String getStatus() {
@@ -94,9 +93,6 @@ public class Campaign {
     }
 
     public void setRecruitmentLimit(int recruitmentLimit) {
-        if (recruitmentLimit < 1 || recruitmentLimit > 10) {
-            throw new IllegalArgumentException("모집 인원은 최소 1명에서 최대 10명이어야 합니다.");
-        }
         this.recruitmentLimit = recruitmentLimit;
     }
 }

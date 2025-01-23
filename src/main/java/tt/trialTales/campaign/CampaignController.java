@@ -18,8 +18,10 @@ public class CampaignController {
 
     // 캠페인 생성
     @PostMapping
-    public ResponseEntity<Campaign> createCampaign(@RequestBody CampaignRequestDto requestDto) {
-        Campaign createdCampaign = campaignService.createCampaign(requestDto);
+    public ResponseEntity<Campaign> createCampaign(
+            @RequestParam Long memberId, // 멤버 ID를 요청 매개변수로 받음
+            @RequestBody CampaignRequestDto requestDto) {
+        Campaign createdCampaign = campaignService.createCampaign(memberId, requestDto);
         return ResponseEntity.ok(createdCampaign);
     }
 
