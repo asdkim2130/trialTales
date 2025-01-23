@@ -19,11 +19,13 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MemberRepository memberRepository;
     private final CampaignRepository campaignRepository;
+    private final ApplicationQueryRepository queryRepository;
 
-    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider, CampaignRepository campaignRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider, CampaignRepository campaignRepository, ApplicationQueryRepository queryRepository) {
         this.applicationRepository = applicationRepository;
         this.memberRepository = memberRepository;
         this.campaignRepository = campaignRepository;
+        this.queryRepository = queryRepository;
     }
 
     //신청 생성
@@ -44,7 +46,7 @@ public class ApplicationService {
                 campaign,
                 application.getSnsUrl(),
                 application.getApplicationDate(),
-                application.getApproved());
+                application.getStatus());
     }
 
 
@@ -65,7 +67,7 @@ public class ApplicationService {
                 campaign,
                 application.getSnsUrl(),
                 application.getApplicationDate(),
-                application.getApproved());
+                application.getStatus());
     }
 
     //사용자별 모든 신청 조회
@@ -82,13 +84,31 @@ public class ApplicationService {
                         application.getCampaign(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
-                        application.getApproved()
+                        application.getStatus()
+                ))
+                .toList();
+    }
+
+    //승인 상태(PENDING, APPROVED)별로 조회하기
+    public List<ReadApplicationResponse>findPending(Status status, Member loginMember){
+
+        if (!loginMember.getRole().equals(Role.ADMIN)) {
+            throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
+        }
+
+        return queryRepository.findAllByStatus(status).stream()
+                .map(application -> new ReadApplicationResponse(
+                        application.getId(),
+                        application.getCampaign(),
+                        application.getSnsUrl(),
+                        application.getApplicationDate(),
+                        application.getStatus()
                 ))
                 .toList();
     }
 
 
-    //신청 삭제(관리자권한 필요)
+    //신청 삭제
     @Transactional
     public void delete(Long id, Member loginMember) {
 
@@ -104,7 +124,7 @@ public class ApplicationService {
     }
 
 
-    //신청 상태 변경(isApproved false -> true, 관리자권한 필요)
+    //신청 상태 변경
     @Transactional
     public UpdateApplicationResponse update(Long id, Member loginMember) {
 
@@ -115,12 +135,12 @@ public class ApplicationService {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다."));
 
-        application.changeStatus();
+        application.statusChange();
 
         return new UpdateApplicationResponse(application.getId(),
                 application.getSnsUrl(),
                 application.getApplicationDate(),
-                application.getApproved());
+                application.getStatus());
     }
 
 

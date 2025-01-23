@@ -29,19 +29,18 @@ public class Application {
     private LocalDateTime applicationDate;
 
     @Column(nullable = false)
-    private Boolean isApproved;
-
+    private Status status;
 
     protected Application() {
     }
 
-    public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
+    public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Status status) {
         this.id = id;
         this.member = member;
         this.campaign = campaign;
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
-        this.isApproved = isApproved;
+        this.status = status;
     }
 
     public Application(String snsUrl) {
@@ -68,11 +67,13 @@ public class Application {
         return applicationDate;
     }
 
-    public Boolean getApproved() {
-        return isApproved;
+    public Status getStatus() {
+        return status;
     }
 
-    public void changeStatus(){
-        this.isApproved = !this.isApproved;
+    public void statusChange(){
+        if(this.status == Status.PENDING){
+            status = Status.APPROVED;
+        }else status = Status.PENDING;
     }
 }

@@ -48,7 +48,17 @@ public class ApplicationRestController {
         return applicationService.findAll(memberId, member);
     }
 
-    //삭제(관리자 권한 필요)
+    //승인 상태별 신청서 조회
+    @GetMapping("applications/{status}")
+    public List<ReadApplicationResponse>findAppsByStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
+                                                          @PathVariable Status status){
+
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
+
+        return applicationService.findPending(status, member);
+    }
+
+    //삭제
     @DeleteMapping("applications/{applicationId}")
     public void deleteApplication(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
             @PathVariable (name = "applicationId") Long id){
@@ -58,7 +68,7 @@ public class ApplicationRestController {
         applicationService.delete(id, member);
     }
 
-    //수정(관리자 권한 필요)
+    //수정
     @PatchMapping("applications/{applicationId}")
     public UpdateApplicationResponse updateStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
                                             @PathVariable (name = "applicationId") Long id){

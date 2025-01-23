@@ -10,5 +10,5 @@ public record ApplicationResponse(Long id,
                                   Campaign campaign,
                                   String snsUrl,
                                   LocalDateTime applicationDate,
-                                  Boolean isApproved) {
+                                  Status status) {
 }
