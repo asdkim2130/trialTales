@@ -93,6 +93,6 @@ public class Application {
     public void statusChange(){
         if(this.status == Status.PENDING){
             status = Status.APPROVED;
-        }status = Status.PENDING;
+        }else status = Status.PENDING;
     }
 }
