@@ -1,5 +1,7 @@
 package tt.trialTales.campaign;
 
+import tt.trialTales.member.Member;
+
 import java.time.LocalDateTime;
 
 
@@ -10,5 +12,6 @@ public record CampaignRequestDto(
         LocalDateTime startDate,     // LocalDateTime: 캠페인 시작 날짜
         LocalDateTime endDate,       // LocalDateTime: 캠페인 종료 날짜
         String status,               // String: 모집 상태 (예: "모집 중", "모집 완료")
-        int recruitmentLimit         // int: 모집 인원 제한
+        int recruitmentLimit,        // int: 모집 인원 제한
+        Long memberId
 ) {}

@@ -1,7 +1,12 @@
 package tt.trialTales.campaign;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import tt.trialTales.member.Member;
+import tt.trialTales.member.MemberRepository;
+import tt.trialTales.member.MemberService;
+import tt.trialTales.member.Role;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,17 +16,27 @@ import java.util.Optional;
 public class CampaignController {
 
     private final CampaignService campaignService;
+    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
-    public CampaignController(CampaignService campaignService) {
+    public CampaignController(CampaignService campaignService, MemberService memberService, MemberRepository memberRepository) {
         this.campaignService = campaignService;
+        this.memberService = memberService;
+        this.memberRepository = memberRepository;
     }
 
-    // 캠페인 생성
+    // 캠페인 생성 (관리자만 접근 가능)
     @PostMapping
     public ResponseEntity<Campaign> createCampaign(
-            @RequestParam Long memberId, // 멤버 ID를 요청 매개변수로 받음
+            @RequestParam Long memberId, // 요청한 사용자 ID
             @RequestBody CampaignRequestDto requestDto) {
-        Campaign createdCampaign = campaignService.createCampaign(memberId, requestDto);
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")); // 사용자 확인
+        if (!member.getRole().equals(Role.ADMIN)) {
+            return ResponseEntity.status(403).build(); // 관리자 권한이 없으면 403 Forbidden
+        }
+
+        Campaign createdCampaign = campaignService.createCampaign(requestDto);
         return ResponseEntity.ok(createdCampaign);
     }
 
@@ -33,8 +48,9 @@ public class CampaignController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // 캠페인 수정
+    // 캠페인 수정 (관리자만 접근 가능)
     @PutMapping("/{campaignId}")
+    @PreAuthorize("hasRole('ADMIN')") // 관리자 권한만 접근 가능
     public ResponseEntity<Campaign> updateCampaign(
             @PathVariable Long campaignId,
             @RequestBody CampaignRequestDto requestDto) {
@@ -43,15 +59,19 @@ public class CampaignController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // 캠페인 삭제
+    // 캠페인 삭제 (관리자만 접근 가능)
     @DeleteMapping("/{campaignId}")
-    public ResponseEntity<Void> deleteCampaign(@PathVariable Long campaignId) {
-        try {
-            campaignService.deleteCampaign(campaignId);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> deleteCampaign(
+            @RequestParam Long memberId,
+            @PathVariable Long campaignId) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        if (!member.getRole().equals(Role.ADMIN)) {
+            return ResponseEntity.status(403).build(); // 관리자 권한이 없으면 403 Forbidden
         }
+
+        campaignService.deleteCampaign(campaignId);
+        return ResponseEntity.noContent().build();
     }
 
     // 모집 종료된 캠페인 조회

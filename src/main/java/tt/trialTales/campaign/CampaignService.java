@@ -1,6 +1,5 @@
 package tt.trialTales.campaign;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tt.trialTales.member.Member;
 import tt.trialTales.member.MemberRepository;
@@ -21,9 +20,9 @@ public class CampaignService {
     }
 
     // 캠페인 생성
-    public Campaign createCampaign(Long memberId, CampaignRequestDto requestDto) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다: " + memberId));
+    public Campaign createCampaign(CampaignRequestDto requestDto) {
+        Member member = memberRepository.findById(requestDto.memberId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다: " + requestDto.memberId()));
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endDate = now.plusDays(7);
@@ -68,17 +67,5 @@ public class CampaignService {
     public List<Campaign> getExpiredCampaigns() {
         LocalDateTime now = LocalDateTime.now();
         return campaignRepository.findByEndDateBefore(now);
-    }
-
-    // 상태 자동 변경
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
-    public void updateCampaignStatuses() {
-        LocalDateTime now = LocalDateTime.now();
-        campaignRepository.findAll().forEach(campaign -> {
-            if (campaign.getEndDate().isBefore(now) && campaign.getStatus().equals("모집 중")) {
-                campaign.setStatus("모집 완료");
-                campaignRepository.save(campaign);
-            }
-        });
     }
 }
