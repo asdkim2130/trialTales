@@ -19,11 +19,13 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final MemberRepository memberRepository;
     private final CampaignRepository campaignRepository;
+    private final ApplicationQueryRepository queryRepository;
 
-    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider, CampaignRepository campaignRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider, CampaignRepository campaignRepository, ApplicationQueryRepository queryRepository) {
         this.applicationRepository = applicationRepository;
         this.memberRepository = memberRepository;
         this.campaignRepository = campaignRepository;
+        this.queryRepository = queryRepository;
     }
 
     //신청 생성
@@ -77,6 +79,24 @@ public class ApplicationService {
 
         return applicationRepository.findById(memberId)
                 .stream()
+                .map(application -> new ReadApplicationResponse(
+                        application.getId(),
+                        application.getCampaign(),
+                        application.getSnsUrl(),
+                        application.getApplicationDate(),
+                        application.getApproved()
+                ))
+                .toList();
+    }
+
+    //승인 상태(PENDING, APPROVED)별로 조회하기
+    public List<ReadApplicationResponse>findPending(Status status, Member loginMember){
+
+        if (!loginMember.getRole().equals(Role.ADMIN)) {
+            throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
+        }
+
+        return queryRepository.findAllByStatus(status).stream()
                 .map(application -> new ReadApplicationResponse(
                         application.getId(),
                         application.getCampaign(),
