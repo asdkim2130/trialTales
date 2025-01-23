@@ -2,6 +2,7 @@ package tt.trialTales.Application;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import tt.trialTales.campaign.Campaign;
 import tt.trialTales.member.Member;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,11 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    private Member memberId;
+    private Member member;
 
-    private Long campaignId;
+    @ManyToOne
+    @JoinColumn(name = "campaignId", nullable = false)
+    private Campaign campaign;
 
     @Column(nullable = false)
     private String snsUrl;
@@ -25,17 +28,17 @@ public class Application {
     @CreatedDate
     private LocalDateTime applicationDate;
 
-    @Column()
+    @Column(nullable = false)
     private Boolean isApproved;
 
 
     protected Application() {
     }
 
-    public Application(Long id, Member memberId, Long campaignId, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
+    public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
         this.id = id;
-        this.memberId = memberId;
-        this.campaignId = campaignId;
+        this.member = member;
+        this.campaign = campaign;
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
         this.isApproved = isApproved;
@@ -49,12 +52,12 @@ public class Application {
         return id;
     }
 
-    public Member getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public Long getCampaignId() {
-        return campaignId;
+    public Campaign getCampaign() {
+        return campaign;
     }
 
     public String getSnsUrl() {

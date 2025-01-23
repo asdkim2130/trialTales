@@ -1,9 +1,7 @@
 package tt.trialTales.Application;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import tt.JwtProvider;
 import tt.LoginMemberResolver;
 import tt.trialTales.member.Member;
 
@@ -13,12 +11,10 @@ import java.util.List;
 public class ApplicationRestController {
 
     private final ApplicationService applicationService;
-    private final JwtProvider jwtProvider;
     private final LoginMemberResolver loginMemberResolver;
 
-    public ApplicationRestController(ApplicationService applicationService, JwtProvider jwtProvider, LoginMemberResolver loginMemberResolver) {
+    public ApplicationRestController(ApplicationService applicationService, LoginMemberResolver loginMemberResolver) {
         this.applicationService = applicationService;
-        this.jwtProvider = jwtProvider;
         this.loginMemberResolver = loginMemberResolver;
     }
 
@@ -34,18 +30,22 @@ public class ApplicationRestController {
 
     //조회
     @GetMapping("applications/{applicationId}")
-    public ApplicationResponse findApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
+    public ReadApplicationResponse findApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                 @PathVariable (name = "applicationId") Long id){
 
-        loginMemberResolver.resolveMemberFromToken(bearToken);
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
 
-        return applicationService.find(id);
+        return applicationService.find(id, member);
     }
 
     //사용자 신청서 모두 조회
     @GetMapping("applications/{memberId}")
-    public List<ApplicationResponse> findAllUserApplications(@PathVariable Long memberId){
-        return applicationService.findAll(memberId);
+    public List<ReadApplicationResponse> findAllUserApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
+                                                             @PathVariable Long memberId){
+
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
+
+        return applicationService.findAll(memberId, member);
     }
 
     //삭제(관리자 권한 필요)
@@ -60,7 +60,7 @@ public class ApplicationRestController {
 
     //수정(관리자 권한 필요)
     @PatchMapping("applications/{applicationId}")
-    public ApplicationResponse updateStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
+    public UpdateApplicationResponse updateStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
                                             @PathVariable (name = "applicationId") Long id){
 
         Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
