@@ -52,11 +52,11 @@ public class Application {
         return id;
     }
 
-    public Member getMemberId() {
+    public Member getMember() {
         return member;
     }
 
-    public Campaign getCampaignId() {
+    public Campaign getCampaign() {
         return campaign;
     }
 

@@ -10,7 +10,6 @@ import tt.trialTales.member.MemberRepository;
 import tt.trialTales.member.MemberService;
 import tt.trialTales.member.Role;
 
-import javax.management.relation.Relation;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -48,31 +47,53 @@ public class ApplicationService {
                 application.getApproved());
     }
 
+
     //신청 조회
-    public ApplicationResponse find(Long id) {
+    public ReadApplicationResponse find(Long id, Member loginMember) {
+
+        if (!loginMember.getRole().equals(Role.ADMIN)) {
+            throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
+        }
+
         Application application = applicationRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("해당 신청 내역이 존재하지 않습니다.")
         );
 
-        return createResponse(application);
+        Campaign campaign = application.getCampaign();
+
+        return new ReadApplicationResponse(application.getId(),
+                campaign,
+                application.getSnsUrl(),
+                application.getApplicationDate(),
+                application.getApproved());
     }
 
     //사용자별 모든 신청 조회
-    public List<ApplicationResponse> findAll(Long memberId) {
+    public List<ReadApplicationResponse> findAll(Long memberId, Member loginMember) {
+
+        if (!loginMember.getRole().equals(Role.ADMIN)) {
+            throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
+        }
+
         return applicationRepository.findById(memberId)
                 .stream()
-                .map(this::createResponse)
+                .map(application -> new ReadApplicationResponse(
+                        application.getId(),
+                        application.getCampaign(),
+                        application.getSnsUrl(),
+                        application.getApplicationDate(),
+                        application.getApproved()
+                ))
                 .toList();
     }
-
 
 
     //신청 삭제(관리자권한 필요)
     @Transactional
     public void delete(Long id, Member loginMember) {
 
-        if(!loginMember.getRole().equals(Role.ADMIN)){
-            throw new NoSuchElementException("삭제는 관리자 권한입니다.");
+        if (!loginMember.getRole().equals(Role.ADMIN)) {
+            throw new NoSuchElementException("신청서 삭제에는 관리자 권한이 필요합니다.");
         }
 
         Application application = applicationRepository.findById(id).orElseThrow(
@@ -83,13 +104,12 @@ public class ApplicationService {
     }
 
 
-
     //신청 상태 변경(isApproved false -> true, 관리자권한 필요)
     @Transactional
-    public ApplicationResponse update(Long id, Member loginMember) {
+    public UpdateApplicationResponse update(Long id, Member loginMember) {
 
         if (!loginMember.getRole().equals(Role.ADMIN)) {
-            throw new NoSuchElementException("수정은 관리자 권합니다.");
+            throw new NoSuchElementException("신청서 수정에는 관리자 권한이 필요합니다.");
         }
 
         Application application = applicationRepository.findById(id)
@@ -97,19 +117,12 @@ public class ApplicationService {
 
         application.changeStatus();
 
-        return createResponse(application);
+        return new UpdateApplicationResponse(application.getId(),
+                application.getSnsUrl(),
+                application.getApplicationDate(),
+                application.getApproved());
     }
 
 
-
-        //ApplicationResponse return 함수
-        public ApplicationResponse createResponse(Application application) {
-            return new ApplicationResponse(application.getId(),
-                    application.getMemberId(),
-                    application.getCampaignId(),
-                    application.getSnsUrl(),
-                    application.getApplicationDate(),
-                    application.getApproved());
-}
 
 }
