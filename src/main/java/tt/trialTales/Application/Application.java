@@ -32,12 +32,13 @@ public class Application {
     protected Application() {
     }
 
-    public Application(Long id, Long campaignId, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
+    public Application(Long id, Member memberId, Long campaignId, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
         this.id = id;
+        this.memberId = memberId;
         this.campaignId = campaignId;
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
-        this.isApproved = false;
+        this.isApproved = isApproved;
     }
 
     public Application(String snsUrl) {

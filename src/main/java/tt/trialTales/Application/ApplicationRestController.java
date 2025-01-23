@@ -22,6 +22,7 @@ public class ApplicationRestController {
         this.loginMemberResolver = loginMemberResolver;
     }
 
+    //생성
     @PostMapping("applications")
     public ApplicationResponse createApplication(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                  @RequestBody ApplicationRequest request){
@@ -31,6 +32,7 @@ public class ApplicationRestController {
         return applicationService.create(request);
     }
 
+    //조회
     @GetMapping("applications/{applicationId}")
     public ApplicationResponse findApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                 @PathVariable (name = "applicationId") Long id){
@@ -40,19 +42,29 @@ public class ApplicationRestController {
         return applicationService.find(id);
     }
 
+    //사용자 신청서 모두 조회
     @GetMapping("applications/{memberId}")
     public List<ApplicationResponse> findAllUserApplications(@PathVariable Long memberId){
         return applicationService.findAll(memberId);
     }
 
+    //삭제(관리자 권한 필요)
     @DeleteMapping("applications/{applicationId}")
-    public void deleteApplication(@PathVariable (name = "applicationId") Long id){
+    public void deleteApplication(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
+            @PathVariable (name = "applicationId") Long id){
 
-        applicationService.delete(id);
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
+
+        applicationService.delete(id, member);
     }
 
+    //수정(관리자 권한 필요)
     @PatchMapping("applications/{applicationId}")
-    public ApplicationResponse updateStatus(@PathVariable (name = "applicationId") Long id){
-        return applicationService.update(id);
+    public ApplicationResponse updateStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
+                                            @PathVariable (name = "applicationId") Long id){
+
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
+
+        return applicationService.update(id, member);
     }
 }

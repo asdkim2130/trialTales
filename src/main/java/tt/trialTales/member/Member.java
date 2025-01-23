@@ -32,6 +32,10 @@ public class Member {
         this.role = role != null ? role : Role.USER; // 기본 권한은 USER
     }
 
+    public Member(String username) {
+        this.username = username;
+    }
+
     public Long getId() {
         return id;
     }
