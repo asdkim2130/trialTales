@@ -12,13 +12,13 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
     private final LoginMemberResolver loginMemberResolver;
-    private ReviewRequest reviewRequest;
+
 
     //**생성자 주입
-    public ReviewController(ReviewService reviewService, LoginMemberResolver loginMemberResolver,ReviewRequest reviewRequest) {
+    public ReviewController(ReviewService reviewService, LoginMemberResolver loginMemberResolver) {
         this.reviewService = reviewService;
         this.loginMemberResolver = loginMemberResolver;
-        this.reviewRequest = reviewRequest;
+
     }
 
     //**리뷰작성 api
@@ -43,7 +43,7 @@ public class ReviewController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
             @PathVariable Long reviewId,
             @RequestBody ReviewRequest reviewRequest) {
-        this.reviewRequest = reviewRequest;
+
         Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
         reviewService.deleteReview(reviewId,member);
     }
