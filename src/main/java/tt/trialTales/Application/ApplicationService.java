@@ -3,6 +3,8 @@ package tt.trialTales.Application;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import tt.JwtProvider;
+import tt.trialTales.campaign.Campaign;
+import tt.trialTales.campaign.CampaignRepository;
 import tt.trialTales.member.Member;
 import tt.trialTales.member.MemberRepository;
 import tt.trialTales.member.MemberService;
@@ -17,14 +19,12 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
-    private final JwtProvider jwtProvider;
+    private final CampaignRepository campaignRepository;
 
-    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider) {
+    public ApplicationService(ApplicationRepository applicationRepository, MemberRepository memberRepository, MemberService memberService, JwtProvider jwtProvider, CampaignRepository campaignRepository) {
         this.applicationRepository = applicationRepository;
         this.memberRepository = memberRepository;
-        this.memberService = memberService;
-        this.jwtProvider = jwtProvider;
+        this.campaignRepository = campaignRepository;
     }
 
     //신청 생성
@@ -32,13 +32,17 @@ public class ApplicationService {
         Application application = new Application(request.snsUrl());
         applicationRepository.save(application);
 
+        Campaign campaign = campaignRepository.findById(request.campaignId()).orElseThrow(
+                () -> new NoSuchElementException("해당 캠페인을 찾을 수 없습니다.")
+        );
+
         Member member = memberRepository.findById(request.memberId()).orElseThrow(
                 () -> new NoSuchElementException("유효하지 않은 사용자입니다.")
         );
 
         return new ApplicationResponse(application.getId(),
                 member,
-                application.getCampaignId(),
+                campaign,
                 application.getSnsUrl(),
                 application.getApplicationDate(),
                 application.getApproved());

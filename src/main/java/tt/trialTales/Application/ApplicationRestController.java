@@ -13,12 +13,10 @@ import java.util.List;
 public class ApplicationRestController {
 
     private final ApplicationService applicationService;
-    private final JwtProvider jwtProvider;
     private final LoginMemberResolver loginMemberResolver;
 
-    public ApplicationRestController(ApplicationService applicationService, JwtProvider jwtProvider, LoginMemberResolver loginMemberResolver) {
+    public ApplicationRestController(ApplicationService applicationService, LoginMemberResolver loginMemberResolver) {
         this.applicationService = applicationService;
-        this.jwtProvider = jwtProvider;
         this.loginMemberResolver = loginMemberResolver;
     }
 
