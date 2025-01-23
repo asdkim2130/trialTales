@@ -65,18 +65,24 @@ public class ApplicationService {
                 .toList();
     }
 
+
+
     //신청 삭제(관리자권한 필요)
     @Transactional
     public void delete(Long id, Member loginMember) {
 
+        if(!loginMember.getRole().equals(Role.ADMIN)){
+            throw new NoSuchElementException("삭제는 관리자 권한입니다.");
+        }
 
-        if (loginMember.getRole().equals(Role.ADMIN)) {
-            Application application = applicationRepository.findById(id).orElseThrow(
-                    () -> new NoSuchElementException("유효하지 않은 신청입니다.")
-            );
-            applicationRepository.delete(application);
-        } else throw new NoSuchElementException("삭제는 관리자 권한입니다.");
+        Application application = applicationRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다.")
+        );
+
+        applicationRepository.delete(application);
     }
+
+
 
     //신청 상태 변경(isApproved false -> true, 관리자권한 필요)
     @Transactional
