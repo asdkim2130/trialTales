@@ -5,7 +5,7 @@ import tt.trialTales.campaign.Campaign;
 public record ReviewResponse(
         Long id,
         Long userId,
-        String reviewContent,
+        String Content,
         int rating,
         Campaign campaign
 ) {
