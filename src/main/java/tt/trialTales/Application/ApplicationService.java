@@ -115,12 +115,12 @@ public class ApplicationService {
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다."));
 
-        application.changeStatus();
+        application.statusChange();
 
         return new UpdateApplicationResponse(application.getId(),
                 application.getSnsUrl(),
                 application.getApplicationDate(),
-                application.getApproved());
+                application.getStatus());
     }
 
 

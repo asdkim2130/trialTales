@@ -31,6 +31,7 @@ public class Application {
     @Column(nullable = false)
     private Boolean isApproved;
 
+    private Status status;
 
     protected Application() {
     }
@@ -42,6 +43,15 @@ public class Application {
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
         this.isApproved = isApproved;
+    }
+
+    public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Status status) {
+        this.id = id;
+        this.member = member;
+        this.campaign = campaign;
+        this.snsUrl = snsUrl;
+        this.applicationDate = applicationDate;
+        this.status = status;
     }
 
     public Application(String snsUrl) {
@@ -72,7 +82,17 @@ public class Application {
         return isApproved;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public void changeStatus(){
         this.isApproved = !this.isApproved;
+    }
+
+    public void statusChange(){
+        if(this.status == Status.PENDING){
+            status = Status.APPROVED;
+        }status = Status.PENDING;
     }
 }
