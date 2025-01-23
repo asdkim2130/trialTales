@@ -69,7 +69,7 @@ public class ReviewService {
     @Transactional
     public void update(Long reviewId, ReviewRequest reviewRequest, Member loginMember) {
         if (!loginMember.getRole().equals(Role.ADMIN)) {
-            throw new NoSuchElementException("수정은 관리자 권합니다.");
+            throw new NoSuchElementException("수정은 관리자 권한입니다.");
         }
 
         Review review = reviewRepository.findById(reviewId)
