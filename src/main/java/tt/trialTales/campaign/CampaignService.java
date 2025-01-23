@@ -1,5 +1,6 @@
 package tt.trialTales.campaign;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tt.trialTales.member.Member;
 import tt.trialTales.member.MemberRepository;
@@ -25,7 +26,7 @@ public class CampaignService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다: " + requestDto.memberId()));
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime endDate = now.plusDays(7);
+        LocalDateTime endDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59); // 종료 날짜를 23:59:59로 설정
 
         Campaign campaign = new Campaign(
                 member, // 캠페인을 생성한 멤버
@@ -68,4 +69,21 @@ public class CampaignService {
         LocalDateTime now = LocalDateTime.now();
         return campaignRepository.findByEndDateBefore(now);
     }
+
+    // 스케줄링 작업: 모집 종료 상태 업데이트
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    public void updateExpiredCampaigns() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Campaign> expiredCampaigns = campaignRepository.findByEndDateBefore(now);
+
+        for (Campaign campaign : expiredCampaigns) {
+            if ("모집 중".equals(campaign.getStatus())) {
+                campaign.setStatus("모집 완료");
+                campaignRepository.save(campaign); // 상태 업데이트
+            }
+        }
+
+        System.out.println("모집 종료 상태 업데이트 완료: " + expiredCampaigns.size() + "개의 캠페인");
+    }
+
 }
