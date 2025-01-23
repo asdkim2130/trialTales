@@ -13,19 +13,19 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private Long campaignId;
+
     private String content;
     private int rating;
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Campaign campaign;
     @CreatedDate
     private LocalDateTime reviewDate;
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Review(Long userId, Long campaignId, String content, int rating,Campaign campaign) {
+    public Review(Long userId, String content, int rating,Campaign campaign) {
         this.userId = userId;
-        this.campaignId = campaignId;
         this.content = content;
         this.rating = rating;
         this.campaign = campaign;
@@ -41,9 +41,8 @@ public class Review {
         return userId;
     }
 
-    public Long getCampaignId() {
-        return campaignId;
-    }
+
+
 
     public String getContent() {
         return content;
@@ -65,9 +64,8 @@ public class Review {
         return campaign;
     }
 
-    public void update(Long userId, Long campaignId, String content, int rating, Campaign campaign ) {
+    public void update(Long userId, String content, int rating, Campaign campaign ) {
         this.userId = userId;
-        this.campaignId = campaignId;
         this.content = content;
         this.rating = rating;
         this.campaign = campaign;

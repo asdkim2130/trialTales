@@ -2,6 +2,8 @@ package tt.trialTales.review;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tt.trialTales.campaign.Campaign;
+import tt.trialTales.campaign.CampaignRepository;
 import tt.trialTales.member.Member;
 import tt.trialTales.member.Role;
 
@@ -13,20 +15,24 @@ import java.util.stream.Collectors;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final CampaignRepository campaignRepository;
 
     //**생성자주입
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewService(ReviewRepository reviewRepository,CampaignRepository campaignRepository) {
         this.reviewRepository = reviewRepository;
+        this.campaignRepository = campaignRepository;
     }
 
     //**리뷰작성 서비스로직
     public void save(ReviewRequest request) {
+
+        Campaign campaign = campaignRepository.findById(request.campaign().getId()).orElseThrow();
+
         reviewRepository.save(new Review(
                 request.userId(),
-                request.campaignId(),
                 request.content(),
                 request.rating(),
-                request.campaign()));
+                campaign));
     }
 
     //**리뷰조회서비스로직
@@ -72,7 +78,6 @@ public class ReviewService {
         // 리뷰 수정
         review.update(
                 reviewRequest.userId(),
-                reviewRequest.campaignId(),
                 reviewRequest.content(),
                 reviewRequest.rating(),
                 reviewRequest.campaign());  // update 메서드를 통해 리뷰 업데이트
