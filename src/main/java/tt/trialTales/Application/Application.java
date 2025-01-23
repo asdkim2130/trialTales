@@ -29,20 +29,9 @@ public class Application {
     private LocalDateTime applicationDate;
 
     @Column(nullable = false)
-    private Boolean isApproved;
-
     private Status status;
 
     protected Application() {
-    }
-
-    public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Boolean isApproved) {
-        this.id = id;
-        this.member = member;
-        this.campaign = campaign;
-        this.snsUrl = snsUrl;
-        this.applicationDate = applicationDate;
-        this.isApproved = isApproved;
     }
 
     public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Status status) {
@@ -78,16 +67,8 @@ public class Application {
         return applicationDate;
     }
 
-    public Boolean getApproved() {
-        return isApproved;
-    }
-
     public Status getStatus() {
         return status;
-    }
-
-    public void changeStatus(){
-        this.isApproved = !this.isApproved;
     }
 
     public void statusChange(){

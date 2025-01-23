@@ -4,5 +4,5 @@ public record ApplicationRequest(Long userId,
                                  Long memberId,
                                  Long campaignId,
                                  String snsUrl,
-                                 Boolean isApproved) {
+                                 Status status) {
 }

@@ -46,7 +46,7 @@ public class ApplicationService {
                 campaign,
                 application.getSnsUrl(),
                 application.getApplicationDate(),
-                application.getApproved());
+                application.getStatus());
     }
 
 
@@ -67,7 +67,7 @@ public class ApplicationService {
                 campaign,
                 application.getSnsUrl(),
                 application.getApplicationDate(),
-                application.getApproved());
+                application.getStatus());
     }
 
     //사용자별 모든 신청 조회
@@ -84,7 +84,7 @@ public class ApplicationService {
                         application.getCampaign(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
-                        application.getApproved()
+                        application.getStatus()
                 ))
                 .toList();
     }
@@ -102,13 +102,13 @@ public class ApplicationService {
                         application.getCampaign(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
-                        application.getApproved()
+                        application.getStatus()
                 ))
                 .toList();
     }
 
 
-    //신청 삭제(관리자권한 필요)
+    //신청 삭제
     @Transactional
     public void delete(Long id, Member loginMember) {
 
@@ -124,7 +124,7 @@ public class ApplicationService {
     }
 
 
-    //신청 상태 변경(isApproved false -> true, 관리자권한 필요)
+    //신청 상태 변경
     @Transactional
     public UpdateApplicationResponse update(Long id, Member loginMember) {
 
