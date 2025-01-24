@@ -26,7 +26,6 @@ public class CampaignController {
     // 캠페인 생성 (관리자만 접근 가능)
     @PostMapping
     public ResponseEntity<Campaign> createCampaign(
-
             @RequestBody CampaignRequestDto requestDto) {
         Member member = memberRepository.findById(requestDto.memberId()).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")); // 사용자 확인
         if (!member.getRole().equals(Role.ADMIN)) {
