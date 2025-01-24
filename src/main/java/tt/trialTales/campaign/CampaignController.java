@@ -9,7 +9,7 @@ import tt.trialTales.member.MemberRepository;
 import tt.trialTales.member.Role;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/campaigns")
@@ -26,23 +26,22 @@ public class CampaignController {
     // 캠페인 생성 (관리자만 접근 가능)
     @PostMapping
     public ResponseEntity<Campaign> createCampaign(
-
             @RequestBody CampaignRequestDto requestDto) {
-        Member member = memberRepository.findById(requestDto.memberId()).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")); // 사용자 확인
+        Member member = memberRepository.findById(requestDto.memberId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")); // 사용자 확인
         if (!member.getRole().equals(Role.ADMIN)) {
             return ResponseEntity.status(403).build(); // 관리자 권한이 없으면 403 Forbidden
         }
 
-        Campaign createdCampaign = campaignService.createCampaign(requestDto);
+        Campaign createdCampaign = campaignService.createCampaign(member, requestDto);
         return ResponseEntity.ok(createdCampaign);
     }
 
     // 캠페인 조회
     @GetMapping("/{campaignId}")
     public ResponseEntity<Campaign> getCampaignById(@PathVariable Long campaignId) {
-        Optional<Campaign> campaign = campaignService.getCampaignById(campaignId);
-        return campaign.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Campaign campaign = campaignService.getCampaignById(campaignId);
+        return ResponseEntity.ok(campaign);
     }
 
     // 캠페인 수정 (관리자만 접근 가능)
@@ -51,9 +50,8 @@ public class CampaignController {
     public ResponseEntity<Campaign> updateCampaign(
             @PathVariable Long campaignId,
             @RequestBody CampaignRequestDto requestDto) {
-        Optional<Campaign> updatedCampaign = campaignService.updateCampaign(campaignId, requestDto);
-        return updatedCampaign.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Campaign updatedCampaign = campaignService.updateCampaign(campaignId, requestDto);
+        return ResponseEntity.ok(updatedCampaign);
     }
 
     // 캠페인 삭제 (관리자만 접근 가능)
@@ -62,7 +60,8 @@ public class CampaignController {
             @RequestParam Long memberId,
             @PathVariable Long campaignId) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
         if (!member.getRole().equals(Role.ADMIN)) {
             return ResponseEntity.status(403).build(); // 관리자 권한이 없으면 403 Forbidden
         }
@@ -78,6 +77,7 @@ public class CampaignController {
         return ResponseEntity.ok(expiredCampaigns);
     }
 }
+
 
 //    // 캠페인 목록 페이지 (Thymeleaf 연동용)
 //    @GetMapping
