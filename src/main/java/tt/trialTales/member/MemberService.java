@@ -78,6 +78,12 @@ public class MemberService {
         }
     }
 
+    // 로그인한 사용자의 닉네임 조회 메서드
+    public String getNickname(String username) {
+        Member member = findByUsername(username);  // 사용자 정보 조회
+        return member.getNickname();  // 닉네임 반환
+    }
+
     // 사용자 이름으로 회원을 찾는 메서드
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username)

@@ -246,4 +246,47 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .statusCode(200);
     }
+
+    @Test
+    void getNicknameTest() {
+        // given
+        final String username = "doraemon";
+        final String password = "dora!23";
+
+        // 회원 가입
+        RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new CreateMemberRequest(username, password, "도라에몽", null))
+                .when()
+                .post("/members")
+                .then().log().all()
+                .statusCode(200);
+
+        // 로그인해서 토큰 받기
+        LoginResponse loginResponse = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest(username, password))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
+
+        // when: 로그인한 사용자로 닉네임 조회
+        String nickname = RestAssured
+                .given().log().all()
+                .header("Authorization", "Bearer " + loginResponse.accessToken())
+                .when()
+                .get("/members/nickname")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .asString();
+
+        // then
+        assertThat(nickname).isEqualTo("도라에몽");
+    }
 }
