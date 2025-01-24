@@ -86,7 +86,7 @@ public class CampaignController {
 //        model.addAttribute("campaigns", campaigns);
 //        return "campaigns"; // templates/campaigns.html 렌더링
 //    }
-//
+//dfdf
 //    // 캠페인 생성 폼 페이지 (Thymeleaf 연동용)
 //    @GetMapping("/new")
 //    public String showCreateCampaignForm(Model model) {
