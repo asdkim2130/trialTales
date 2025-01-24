@@ -1,7 +1,9 @@
 package tt.trialTales;
 
 import io.restassured.RestAssured;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,15 +18,17 @@ import tt.trialTales.member.Role;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CampaignTest {
+@SpringBootTest
+@Transactional
+public class CampaignTest {
 
-    @LocalServerPort
-    int port;
+    @Autowired
+    private CampaignService campaignService;
 
     @Autowired
     private CampaignRepository campaignRepository;
@@ -32,116 +36,112 @@ class CampaignTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private CampaignService campaignService;
+    private Member adminMember;
 
     @BeforeEach
     void setUp() {
-        RestAssured.port = port;
+        // 관리자 멤버 생성
+        adminMember = new Member("admin", "password", "Admin", Role.ADMIN);
+        memberRepository.save(adminMember);
     }
 
     @Test
-    void 캠페인_생성() {
+    void 캠페인_생성_테스트() {
         // Given
-        Member admin = new Member("admin", "password", "Admin", Role.ADMIN);
-        memberRepository.save(admin);
-
         CampaignRequestDto requestDto = new CampaignRequestDto(
-                "캠페인 생성 테스트입니다",
-                "캠페인 생성 테스트 내용입니다",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7).withHour(23).withMinute(59).withSecond(59),
+                "캠페인 이름",
+                "캠페인 설명",
+                null,
+                null,
                 "모집 중",
-                100,
-                admin.getId()
+                10,
+                adminMember.getId()
         );
 
         // When
-        Campaign createdCampaign = campaignService.createCampaign(requestDto);
+        Campaign createdCampaign = campaignService.createCampaign(adminMember, requestDto);
 
         // Then
-        Optional<Campaign> foundCampaign = campaignRepository.findById(createdCampaign.getId());
-        assertThat(foundCampaign).isPresent();
-        assertThat(foundCampaign.get().getCampaignName()).isEqualTo("캠페인 생성 테스트입니다");
-        assertThat(foundCampaign.get().getDescription()).isEqualTo("캠페인 생성 테스트 내용입니다");
+        assertThat(createdCampaign.getCampaignName()).isEqualTo("캠페인 이름");
+        assertThat(createdCampaign.getDescription()).isEqualTo("캠페인 설명");
+        assertThat(createdCampaign.getStatus()).isEqualTo("모집 중");
+        assertThat(createdCampaign.getRecruitmentLimit()).isEqualTo(10);
     }
 
     @Test
-    void 캠페인_조회() {
+    void 캠페인_ID_조회_테스트() {
         // Given
-        Member admin = new Member("admin", "password", "Admin", Role.ADMIN);
-        memberRepository.save(admin);
-
         Campaign campaign = new Campaign(
-                admin,
-                "Existing Campaign",
-                "일산백운축산내용입니다.",
+                adminMember,
+                "캠페인 이름",
+                "캠페인 설명",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
                 "모집 중",
-                50
+                10
         );
         campaignRepository.save(campaign);
 
         // When
-        Optional<Campaign> foundCampaign = campaignService.getCampaignById(campaign.getId());
+        Campaign foundCampaign = campaignService.getCampaignById(campaign.getId());
 
         // Then
-        assertThat(foundCampaign).isPresent();
-        assertThat(foundCampaign.get().getCampaignName()).isEqualTo("Existing Campaign");
-        assertThat(foundCampaign.get().getRecruitmentLimit()).isEqualTo(50);
+        assertThat(foundCampaign.getCampaignName()).isEqualTo("캠페인 이름");
+        assertThat(foundCampaign.getDescription()).isEqualTo("캠페인 설명");
     }
 
     @Test
-    void 캠페인_수정() {
-        // Given
-        Member admin = new Member("admin", "password", "Admin", Role.ADMIN);
-        memberRepository.save(admin);
+    void 캠페인_ID_조회_예외_테스트() {
+        // When & Then
+        assertThatThrownBy(() -> campaignService.getCampaignById(999L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("해당 캠페인이 존재하지 않습니다");
+    }
 
+    @Test
+    void 캠페인_수정_테스트() {
+        // Given
         Campaign campaign = new Campaign(
-                admin,
-                "캠페인 수정입니다",
-                "캠페인 수정내용입니다",
+                adminMember,
+                "캠페인 이름",
+                "캠페인 설명",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
                 "모집 중",
-                50
+                10
         );
         campaignRepository.save(campaign);
 
-        CampaignRequestDto updateRequestDto = new CampaignRequestDto(
-                "수정된 캠페인입니다",
-                "수정된 캠페인 내용입니다",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7),
-                "모집 중",
-                100,
-                admin.getId()
+        CampaignRequestDto updateDto = new CampaignRequestDto(
+                "수정된 이름",
+                "수정된 설명",
+                null,
+                null,
+                null,
+                15,
+                adminMember.getId()
         );
 
         // When
-        Optional<Campaign> updatedCampaign = campaignService.updateCampaign(campaign.getId(), updateRequestDto);
+        Campaign updatedCampaign = campaignService.updateCampaign(campaign.getId(), updateDto);
 
         // Then
-        assertThat(updatedCampaign).isPresent();
-        assertThat(updatedCampaign.get().getCampaignName()).isEqualTo("수정된 캠페인입니다");
-        assertThat(updatedCampaign.get().getRecruitmentLimit()).isEqualTo(100);
+        assertThat(updatedCampaign.getCampaignName()).isEqualTo("수정된 이름");
+        assertThat(updatedCampaign.getDescription()).isEqualTo("수정된 설명");
+        assertThat(updatedCampaign.getRecruitmentLimit()).isEqualTo(15);
     }
 
     @Test
-    void 캠페인_삭제() {
+    void 캠페인_삭제_테스트() {
         // Given
-        Member admin = new Member("admin", "password", "Admin", Role.ADMIN);
-        memberRepository.save(admin);
-
         Campaign campaign = new Campaign(
-                admin,
-                "캠페인 삭제 입니다",
-                "캠페인 삭제 내용 입니다",
+                adminMember,
+                "캠페인 이름",
+                "캠페인 설명",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(7),
                 "모집 중",
-                50
+                10
         );
         campaignRepository.save(campaign);
 
@@ -149,32 +149,39 @@ class CampaignTest {
         campaignService.deleteCampaign(campaign.getId());
 
         // Then
-        Optional<Campaign> deletedCampaign = campaignRepository.findById(campaign.getId());
-        assertThat(deletedCampaign).isEmpty();
+        assertThat(campaignRepository.findById(campaign.getId())).isEmpty();
     }
 
     @Test
-    void 모집_종료된_캠페인_조회() {
+    void 모집_종료된_캠페인_조회_테스트() {
         // Given
-        Member admin = new Member("admin", "password", "Admin", Role.ADMIN);
-        memberRepository.save(admin);
-
         Campaign expiredCampaign = new Campaign(
-                admin,
-                "모집 종료된 캠페인입니다",
-                "모집 종료",
+                adminMember,
+                "종료된 캠페인",
+                "종료된 설명",
                 LocalDateTime.now().minusDays(10),
                 LocalDateTime.now().minusDays(3),
                 "모집 중",
-                50
+                10
         );
         campaignRepository.save(expiredCampaign);
+
+        Campaign activeCampaign = new Campaign(
+                adminMember,
+                "활성 캠페인",
+                "활성 설명",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(5),
+                "모집 중",
+                15
+        );
+        campaignRepository.save(activeCampaign);
 
         // When
         List<Campaign> expiredCampaigns = campaignService.getExpiredCampaigns();
 
         // Then
         assertThat(expiredCampaigns).hasSize(1);
-        assertThat(expiredCampaigns.get(0).getCampaignName()).isEqualTo("모집 종료된 캠페인입니다");
+        assertThat(expiredCampaigns.get(0).getCampaignName()).isEqualTo("종료된 캠페인");
     }
 }

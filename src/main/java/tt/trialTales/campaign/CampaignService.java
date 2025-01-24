@@ -21,19 +21,16 @@ public class CampaignService {
     }
 
     // 캠페인 생성
-    public Campaign createCampaign(CampaignRequestDto requestDto) {
-        Member member = memberRepository.findById(requestDto.memberId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다: " + requestDto.memberId()));
-
+    public Campaign createCampaign(Member member, CampaignRequestDto requestDto) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime endDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59); // 종료 날짜를 23:59:59로 설정
+        LocalDateTime endDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59); // 종료 날짜 설정
 
         Campaign campaign = new Campaign(
-                member, // 캠페인을 생성한 멤버
+                member,
                 requestDto.campaignName(),
                 requestDto.description(),
-                now, // 시작 날짜
-                endDate, // 종료 날짜
+                now,
+                endDate,
                 "모집 중",
                 requestDto.recruitmentLimit()
         );
@@ -42,24 +39,27 @@ public class CampaignService {
     }
 
     // 캠페인 조회 (ID로 조회)
-    public Optional<Campaign> getCampaignById(Long campaignId) {
-        return campaignRepository.findById(campaignId);
+    public Campaign getCampaignById(Long campaignId) {
+        return campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 캠페인이 존재하지 않습니다: " + campaignId));
     }
 
     // 캠페인 수정
-    public Optional<Campaign> updateCampaign(Long campaignId, CampaignRequestDto requestDto) {
-        return campaignRepository.findById(campaignId).map(existingCampaign -> {
-            existingCampaign.setCampaignName(requestDto.campaignName());
-            existingCampaign.setDescription(requestDto.description());
-            existingCampaign.setRecruitmentLimit(requestDto.recruitmentLimit());
-            return campaignRepository.save(existingCampaign);
-        });
+    public Campaign updateCampaign(Long campaignId, CampaignRequestDto requestDto) {
+        Campaign existingCampaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 캠페인이 존재하지 않습니다: " + campaignId));
+
+        existingCampaign.setCampaignName(requestDto.campaignName());
+        existingCampaign.setDescription(requestDto.description());
+        existingCampaign.setRecruitmentLimit(requestDto.recruitmentLimit());
+
+        return campaignRepository.save(existingCampaign);
     }
 
     // 캠페인 삭제
     public void deleteCampaign(Long campaignId) {
         if (!campaignRepository.existsById(campaignId)) {
-            throw new IllegalArgumentException("해당 캠페인이 없습니다.: " + campaignId);
+            throw new IllegalArgumentException("해당 캠페인이 없습니다: " + campaignId);
         }
         campaignRepository.deleteById(campaignId);
     }
@@ -79,11 +79,17 @@ public class CampaignService {
         for (Campaign campaign : expiredCampaigns) {
             if ("모집 중".equals(campaign.getStatus())) {
                 campaign.setStatus("모집 완료");
-                campaignRepository.save(campaign); // 상태 업데이트
+                campaignRepository.save(campaign);
             }
         }
 
         System.out.println("모집 종료 상태 업데이트 완료: " + expiredCampaigns.size() + "개의 캠페인");
     }
-
 }
+
+//    // 캠페인 목록 조회
+//    public List<Campaign> getAllCampaigns() {
+//        return campaignRepository.findAll();
+//    }
+
+
