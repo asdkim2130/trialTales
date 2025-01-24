@@ -24,7 +24,10 @@ public class Review {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Review(Long userId, String content, int rating,Campaign campaign) {
+    protected Review() {
+    }
+
+    public Review(Long userId, String content, int rating, Campaign campaign) {
         this.userId = userId;
         this.content = content;
         this.rating = rating;
