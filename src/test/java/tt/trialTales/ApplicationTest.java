@@ -2,7 +2,6 @@ package tt.trialTales;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.http.Header;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,10 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import tt.trialTales.Application.ApplicationRequest;
-import tt.trialTales.Application.ApplicationResponse;
 import tt.trialTales.Application.Status;
 import tt.trialTales.campaign.*;
 import tt.trialTales.member.*;
@@ -42,9 +39,13 @@ public class ApplicationTest {
 
     @DisplayName("Application 생성")
     @Test
-    //회원가임
+    //회원가입
     public void application생성테스트(){
 
+        final String adminUsername = "admin";
+        final String adminPassword = "admin123";
+        final String memberUsername = "memberToDelete";
+        final String memberPassword = "member123";
 
         //회원가입
         RestAssured.given().log().all()
@@ -63,8 +64,6 @@ public class ApplicationTest {
                 .post("login")
                 .then().log().all()
                 .statusCode(200);
-
-
     }
 
     @Test
@@ -73,6 +72,26 @@ public class ApplicationTest {
         memberRepository.save(admin);
 
 
+        final String adminUsername = "admin";
+        final String adminPassword = "admin123";
+
+
+        // 관리자 로그인 후 토큰 얻기
+        LoginResponse adminLoginResponse = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest(adminUsername, adminPassword))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
+
+        String adminToken = adminLoginResponse.accessToken();
+
+
+        //캠페인 생성
         Campaign campaign = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new CampaignRequestDto("캠페인 생성 테스트입니다",
@@ -89,9 +108,11 @@ public class ApplicationTest {
                 .extract()
                 .as(Campaign.class);
 
+
+        // Application 생성
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .header(new Header("bearToken", ""))
+                .header("Authorization", "Bearer " + adminToken)
                 .body(new ApplicationRequest(admin.getId(), campaign.getId(), "url", Status.PENDING ))
                 .when()
                 .post("applications")
@@ -101,6 +122,5 @@ public class ApplicationTest {
 //                .as(ApplicationResponse.class);
 
     }
-
 
 }
