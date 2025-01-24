@@ -37,7 +37,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void 캠페인생성(){
+    public void 캠페인생성() {
         // given
         final String adminUsername = "admin";
         final String adminPassword = "admin123";
@@ -94,13 +94,27 @@ public class ApplicationTest {
                 .extract()
                 .as(Campaign.class);
 
+        //application 생성
+        ApplicationResponse applicationResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + adminToken)
+                .body(new ApplicationRequest(memberId, campaign.getId(), "url", Status.PENDING))
+                .when()
+                .post("applications")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(ApplicationResponse.class);
+
+        Long applicationId = applicationResponse.id();
+
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + adminToken)
-                .body(new ApplicationRequest(memberId, campaign.getId(), "url", Status.PENDING ))
+                .header("Authorization", "Barer " + adminToken)
+                .pathParam("applicationId", applicationId)
                 .when()
-                .post("applications")
+                .get("applications/{applicationId}")
                 .then().log().all()
                 .statusCode(200);
 
