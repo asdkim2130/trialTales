@@ -3,6 +3,7 @@ package tt.trialTales;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,29 +28,27 @@ public class ApplicationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-
     @LocalServerPort
     int port;
-
-
-
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
     }
 
-
-    @DisplayName("Application 생성")
     @Test
-    //회원가임
-    public void application생성테스트(){
-
+    public void 캠페인생성(){
+        // given
+        final String adminUsername = "admin";
+        final String adminPassword = "admin123";
+        final String memberUsername = "memberToDelete";
+        final String memberPassword = "member123";
+        final Long memberId = 1L;
 
         //회원가입
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new CreateMemberRequest("admin", "12345", "nickname", Role.ADMIN))
+                .body(new CreateMemberRequest(adminUsername, adminPassword, "nickname", Role.ADMIN))
                 .when()
                 .post("members")
                 .then().log().all()
@@ -58,21 +57,27 @@ public class ApplicationTest {
         //로그인
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new LoginRequest("admin", "12345"))
+                .body(new LoginRequest(adminUsername, adminPassword))
                 .when()
                 .post("login")
                 .then().log().all()
                 .statusCode(200);
 
+        //토큰생성
+        LoginResponse adminLoginResponse = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest(adminUsername, adminPassword))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
 
-    }
+        String adminToken = adminLoginResponse.accessToken();
 
-    @Test
-    public void 캠페인생성(){
-        Member admin = new Member("admin", "password", "Admin", Role.ADMIN);
-        memberRepository.save(admin);
-
-
+        //캠페인 생성
         Campaign campaign = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new CampaignRequestDto("캠페인 생성 테스트입니다",
@@ -81,7 +86,7 @@ public class ApplicationTest {
                         LocalDateTime.now().plusDays(7).withHour(23).withMinute(59).withSecond(59),
                         "모집 중",
                         100,
-                        admin.getId()))
+                        memberId))
                 .when()
                 .post("campaigns")
                 .then().log().all()
@@ -89,18 +94,18 @@ public class ApplicationTest {
                 .extract()
                 .as(Campaign.class);
 
+
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .header(new Header("bearToken", ""))
-                .body(new ApplicationRequest(admin.getId(), campaign.getId(), "url", Status.PENDING ))
+                .header("Authorization", "Bearer " + adminToken)
+                .body(new ApplicationRequest(memberId, campaign.getId(), "url", Status.PENDING ))
                 .when()
                 .post("applications")
                 .then().log().all()
                 .statusCode(200);
-//                .extract()
-//                .as(ApplicationResponse.class);
 
     }
 
 
 }
+

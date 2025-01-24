@@ -2,11 +2,12 @@ package tt.trialTales.Application;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import tt.trialTales.campaign.Campaign;
 import tt.trialTales.member.Member;
 
 import java.time.LocalDateTime;
-
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Application {
 
@@ -29,21 +30,14 @@ public class Application {
     private LocalDateTime applicationDate;
 
     @Column(nullable = false)
-    private Status status;
+    private Status status = Status.PENDING;
 
     protected Application() {
     }
 
-    public Application(Long id, Member member, Campaign campaign, String snsUrl, LocalDateTime applicationDate, Status status) {
-        this.id = id;
+    public Application(Member member, Campaign campaign, String snsUrl) {
         this.member = member;
         this.campaign = campaign;
-        this.snsUrl = snsUrl;
-        this.applicationDate = applicationDate;
-        this.status = status;
-    }
-
-    public Application(String snsUrl) {
         this.snsUrl = snsUrl;
     }
 
