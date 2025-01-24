@@ -16,11 +16,13 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final CampaignRepository campaignRepository;
+    private final ReviewQueryRepository reviewQueryRepository;
 
     //**생성자주입
-    public ReviewService(ReviewRepository reviewRepository,CampaignRepository campaignRepository) {
+    public ReviewService(ReviewRepository reviewRepository, CampaignRepository campaignRepository, ReviewQueryRepository reviewQueryRepository) {
         this.reviewRepository = reviewRepository;
         this.campaignRepository = campaignRepository;
+        this.reviewQueryRepository = reviewQueryRepository;
     }
 
     //**리뷰작성 서비스로직
@@ -75,11 +77,16 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
 
-        // 리뷰 수정
+        //** 리뷰 수정
         review.update(
                 reviewRequest.userId(),
                 reviewRequest.content(),
                 reviewRequest.rating(),
                 reviewRequest.campaign());  // update 메서드를 통해 리뷰 업데이트
+    }
+
+    //** 리뷰 rating 순으로 오름차순 로직
+    public List<Review> getReviewsSortedByRating() {
+        return reviewQueryRepository.findReviewsSortedByRating();
     }
 }
