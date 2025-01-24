@@ -42,4 +42,12 @@ public class MemberRestController {
         Member member = loginMemberResolver.resolveMemberFromToken(token);
         memberService.updateNickname(member.getUsername(), newNickname, member);
     }
+
+    // 로그인한 사용자의 닉네임 조회 API
+    @GetMapping("/members/nickname")
+    public String getNickname(@RequestHeader("Authorization") String token) {
+        // 토큰에서 사용자 정보 추출
+        Member member = loginMemberResolver.resolveMemberFromToken(token);
+        return memberService.getNickname(member.getUsername());  // 닉네임 반환
+    }
 }

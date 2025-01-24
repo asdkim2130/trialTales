@@ -16,7 +16,7 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @Column(nullable = false)
@@ -36,6 +36,10 @@ public class Member {
         this.username = username;
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,6 +55,7 @@ public class Member {
     public String getNickname() {
         return nickname;
     }
+
 
     public Role getRole() {
         return role;
