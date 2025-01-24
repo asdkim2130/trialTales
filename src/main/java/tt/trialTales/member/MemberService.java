@@ -1,5 +1,6 @@
 package tt.trialTales.member;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import tt.JwtProvider;
 import tt.SecurityUtils;
@@ -64,9 +65,17 @@ public class MemberService {
             throw new IllegalArgumentException("본인만 닉네임을 변경할 수 있습니다.");
         }
 
+        // 회원 정보 조회
         Member member = findByUsername(username);  // 회원 정보 조회
-        member = new Member(member.getUsername(), member.getPassword(), newNickname, member.getRole());
-        memberRepository.save(member);  // 닉네임 업데이트
+        member.setNickname(newNickname);  // 기존 객체에서 닉네임 수정
+
+        try {
+            // 닉네임 수정된 회원 저장
+            memberRepository.save(member);
+        } catch (DataIntegrityViolationException e) {
+            // 닉네임 중복 시 처리
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
     }
 
     // 사용자 이름으로 회원을 찾는 메서드
