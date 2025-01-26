@@ -43,6 +43,8 @@ public class ApplicationService {
                 campaign,
                 member);
 
+        applicationRepository.save(application);
+
         return new ApplicationResponse(application.getId(),
                 member,
                 campaign,
