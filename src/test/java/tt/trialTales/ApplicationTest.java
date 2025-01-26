@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import tt.trialTales.Application.Application;
 import tt.trialTales.Application.ApplicationRequest;
 import tt.trialTales.Application.ApplicationResponse;
 import tt.trialTales.Application.Status;
@@ -17,6 +18,8 @@ import tt.trialTales.campaign.*;
 import tt.trialTales.member.*;
 
 import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -98,7 +101,7 @@ public class ApplicationTest {
         Long campaignId = campaign.getId();
 
         // Application 생성
-        RestAssured.given().log().all()
+        Application application = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + adminToken)
                 .body(new ApplicationRequest(memberId, campaignId, "url", Status.PENDING))
@@ -107,9 +110,20 @@ public class ApplicationTest {
                 .then().log().all()
                 .statusCode(200).
                 extract()
-                .as(ApplicationResponse.class);
+                .as(Application.class);
+
+        Long applicationId = application.getId();
+        assertThat(applicationId).isNotNull();
 
 
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + adminToken)
+                .pathParam("applicationId", applicationId)
+                .when()
+                .get("applications/{applicationId}")
+                .then().log().all()
+                .statusCode(200);
     }
 
 
