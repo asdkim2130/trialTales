@@ -163,7 +163,34 @@ public class ApplicationTest {
         assertThat(list).anyMatch(readApplicationResponse -> readApplicationResponse.id().equals(3L));
     }
 
+    @DisplayName("신청서 수정 테스트")
+    @Test
+    public void 수정테스트2() {
+        final String adminUsername = "admin";
+        final String adminPassword = "admin123";
+        final Long memberId = 1L;
 
+        signUp(adminUsername, adminPassword);
+
+        logIn(adminUsername, adminPassword);
+
+        String token = getToken(adminUsername, adminPassword);
+
+        Long campaignId = getCampaignId(memberId);
+
+        Long applicationId = getApplicationId(token, memberId, campaignId);
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("applicationId", applicationId)
+                .when()
+                .patch("applications/{applicationId}")
+                .then().log().all()
+                .statusCode(200);
+
+
+    }
 
     // 테스트 함수 메서드 분리
     //회원가입
