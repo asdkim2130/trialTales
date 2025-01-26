@@ -180,6 +180,7 @@ public class ApplicationTest {
 
         Long applicationId = getApplicationId(token, memberId, campaignId);
 
+        //수정
         ValidatableResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
@@ -189,6 +190,11 @@ public class ApplicationTest {
                 .then().log().all()
                 .statusCode(200);
 
+        //수정 조회
+        ApplicationResponse application = getApplication(token, applicationId);
+
+        //검증
+        assertThat(application.status()).isEqualTo(Status.APPROVED);
     }
 
 
@@ -324,6 +330,21 @@ public class ApplicationTest {
                 .as(Application.class);
 
         return application.getId();
+    }
+
+    //조회
+    public ApplicationResponse getApplication(String token, Long applicationId) {
+        ApplicationResponse applicationResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("applicationId", applicationId)
+                .when()
+                .get("applications/{applicationId}")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(ApplicationResponse.class);
+        return applicationResponse;
     }
 
     //목록조회
