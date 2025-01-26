@@ -29,7 +29,7 @@ public class Application {
     private LocalDateTime applicationDate;
 
     @Column(nullable = false)
-    private Status status;
+    private Status status = Status.PENDING;
 
     protected Application() {
     }
