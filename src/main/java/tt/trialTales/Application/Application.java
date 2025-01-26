@@ -43,6 +43,12 @@ public class Application {
         this.status = status;
     }
 
+    public Application(String snsUrl, Campaign campaign, Member member) {
+        this.snsUrl = snsUrl;
+        this.campaign = campaign;
+        this.member = member;
+    }
+
     public Application(String snsUrl) {
         this.snsUrl = snsUrl;
     }
