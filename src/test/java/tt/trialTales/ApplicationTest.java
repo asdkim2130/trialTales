@@ -251,6 +251,42 @@ public class ApplicationTest {
 
     }
 
+    @DisplayName("신청서 삭제 테스트")
+    @Test
+    public void 신청서삭제테스트(){
+        final String adminUsername = "admin";
+        final String adminPassword = "admin123";
+        final Long memberId = 1L;
+
+        signUp(adminUsername, adminPassword);
+
+        logIn(adminUsername, adminPassword);
+
+        String token = getToken(adminUsername, adminPassword);
+
+        Long campaignId = getCampaignId(memberId);
+
+        //application 생성
+        Long applicationId = getApplicationId(token, memberId, campaignId);
+        getApplicationId(token, memberId, campaignId);
+        getApplicationId(token, memberId, campaignId);
+
+        //삭제
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("applicationId", applicationId)
+                .when()
+                .delete("applications/{applicationId}")
+                .then().log().all()
+                .statusCode(200);
+
+        //삭제 확인 조회
+        List<ReadApplicationResponse> applicationsList = getApplicationsList(token, memberId);
+
+        assertThat(applicationsList.size()).isEqualTo(2);
+    }
+
 
 
     // 테스트 함수 메서드 분리
