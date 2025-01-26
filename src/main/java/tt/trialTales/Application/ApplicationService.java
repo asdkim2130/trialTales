@@ -12,6 +12,7 @@ import tt.trialTales.member.Role;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -30,8 +31,6 @@ public class ApplicationService {
 
     //신청 생성
     public ApplicationResponse create(ApplicationRequest request) {
-        Application application = new Application(request.snsUrl());
-        applicationRepository.save(application);
 
         Campaign campaign = campaignRepository.findById(request.campaignId()).orElseThrow(
                 () -> new NoSuchElementException("해당 캠페인을 찾을 수 없습니다.")
@@ -40,6 +39,12 @@ public class ApplicationService {
         Member member = memberRepository.findById(request.memberId()).orElseThrow(
                 () -> new NoSuchElementException("유효하지 않은 사용자입니다.")
         );
+
+        Application application = new Application(request.snsUrl(),
+                campaign,
+                member);
+
+        applicationRepository.save(application);
 
         return new ApplicationResponse(application.getId(),
                 member,
@@ -77,7 +82,7 @@ public class ApplicationService {
             throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
         }
 
-        return applicationRepository.findById(memberId)
+        return applicationRepository.findByMemberId(memberId)
                 .stream()
                 .map(application -> new ReadApplicationResponse(
                         application.getId(),

@@ -29,7 +29,7 @@ public class Application {
     private LocalDateTime applicationDate;
 
     @Column(nullable = false)
-    private Status status;
+    private Status status = Status.PENDING;
 
     protected Application() {
     }
@@ -41,6 +41,12 @@ public class Application {
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
         this.status = status;
+    }
+
+    public Application(String snsUrl, Campaign campaign, Member member) {
+        this.snsUrl = snsUrl;
+        this.campaign = campaign;
+        this.member = member;
     }
 
     public Application(String snsUrl) {

@@ -39,7 +39,7 @@ public class ApplicationRestController {
     }
 
     //사용자 신청서 모두 조회
-    @GetMapping("applications/{memberId}")
+    @GetMapping("applications/user/{memberId}")
     public List<ReadApplicationResponse> findAllUserApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                              @PathVariable Long memberId){
 
@@ -49,7 +49,7 @@ public class ApplicationRestController {
     }
 
     //승인 상태별 신청서 조회
-    @GetMapping("applications/{status}")
+    @GetMapping("applications/status/{status}")
     public List<ReadApplicationResponse>findAppsByStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
                                                           @PathVariable Status status){
 
