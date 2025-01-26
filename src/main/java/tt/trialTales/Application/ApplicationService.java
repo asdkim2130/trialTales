@@ -12,6 +12,7 @@ import tt.trialTales.member.Role;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -81,7 +82,7 @@ public class ApplicationService {
             throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
         }
 
-        return applicationRepository.findById(memberId)
+        return applicationRepository.findByMemberId(memberId)
                 .stream()
                 .map(application -> new ReadApplicationResponse(
                         application.getId(),
