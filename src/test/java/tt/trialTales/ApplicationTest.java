@@ -165,7 +165,7 @@ public class ApplicationTest {
 
     @DisplayName("신청서 수정 테스트")
     @Test
-    public void 수정테스트2() {
+    public void 수정테스트() {
         final String adminUsername = "admin";
         final String adminPassword = "admin123";
         final Long memberId = 1L;
@@ -180,6 +180,41 @@ public class ApplicationTest {
 
         Long applicationId = getApplicationId(token, memberId, campaignId);
 
+        ValidatableResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("applicationId", applicationId)
+                .when()
+                .patch("applications/{applicationId}")
+                .then().log().all()
+                .statusCode(200);
+
+    }
+
+
+    @DisplayName("승인 상태별 신청서 조회 테스트")
+    @Test
+    public void 상태별조회테스트() {
+        final String adminUsername = "admin";
+        final String adminPassword = "admin123";
+        final Long memberId = 1L;
+
+        signUp(adminUsername, adminPassword);
+
+        logIn(adminUsername, adminPassword);
+
+        String token = getToken(adminUsername, adminPassword);
+
+        Long campaignId = getCampaignId(memberId);
+
+        Long applicationId = getApplicationId(token, memberId, campaignId);
+
+        //PENDING 생성
+        getApplicationId(token, memberId, campaignId);
+        getApplicationId(token, memberId, campaignId);
+        getApplicationId(token, memberId, campaignId);
+
+        //APPROVED로 수정
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
@@ -189,8 +224,28 @@ public class ApplicationTest {
                 .then().log().all()
                 .statusCode(200);
 
+        //목록 조회
+        List<ApplicationResponse> list = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("status", Status.APPROVED)
+                .when()
+                .get("applications/status/{status}")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList(".", ApplicationResponse.class);
+
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).anyMatch(
+                applicationResponse -> applicationResponse
+                        .status()
+                        .equals(Status.APPROVED));
 
     }
+
+
 
     // 테스트 함수 메서드 분리
     //회원가입
@@ -269,7 +324,23 @@ public class ApplicationTest {
                 .as(Application.class);
 
         return application.getId();
+    }
 
+    //목록조회
+    public List<ReadApplicationResponse> getApplicationsList(String token, Long memberId) {
+        List<ReadApplicationResponse> list = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .pathParam("memberId", memberId)
+                .when()
+                .get("applications/user/{memberId}")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList(".", ReadApplicationResponse.class);
+
+        return list;
     }
 }
 
