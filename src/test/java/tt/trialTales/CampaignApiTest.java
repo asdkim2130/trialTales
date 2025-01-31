@@ -5,9 +5,11 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
+import tt.DatabaseCleanup;
 import tt.trialTales.campaign.CampaignRequestDto;
 import tt.trialTales.campaign.CampaignResponseDto;
 import tt.trialTales.member.CreateMemberRequest;
@@ -26,9 +28,13 @@ public class CampaignApiTest {
 
     private String adminToken; // 관리자 로그인 후 얻은 JWT 토큰
 
+    @Autowired
+    DatabaseCleanup databaseCleanup;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleanup.execute();
 
         // ✅ 회원가입 (관리자)
         RestAssured.given().log().all()
