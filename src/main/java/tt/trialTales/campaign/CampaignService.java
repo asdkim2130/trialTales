@@ -7,7 +7,7 @@ import tt.trialTales.member.MemberRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class CampaignService {
@@ -90,7 +90,9 @@ public class CampaignService {
         System.out.println("모집 종료 상태 업데이트 완료: " + expiredCampaigns.size() + "개의 캠페인");
     }
 
+
     // 엔티티 -> DTO로 변환
+
     private CampaignResponseDto mapToDto(Campaign campaign) {
         return new CampaignResponseDto(
                 campaign.getId(),
