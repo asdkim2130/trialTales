@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,15 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ApplicationTest {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
     @LocalServerPort
     int port;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+
     }
 
 
@@ -234,9 +231,9 @@ public class ApplicationTest {
         List<ApplicationResponse> list = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
-                .pathParam("status", Status.APPROVED)
+                .param("status", Status.APPROVED)
                 .when()
-                .get("applications/status/{status}")
+                .get("applications/approval")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
