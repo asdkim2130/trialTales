@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
-class CampaignServiceTest {
+class CampaignTest {
 
     @Autowired
     private CampaignService campaignService;
