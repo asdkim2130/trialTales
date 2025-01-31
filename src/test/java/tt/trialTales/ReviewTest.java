@@ -155,4 +155,77 @@ public class ReviewTest {
                 .then().log().all()
                 .statusCode(200);
     }
+
+    @Test
+    public void 리뷰수정() {
+        // 날짜 문자열을 LocalDateTime으로 변환
+        String startDateString = "2024-01-21";
+        LocalDateTime startDate = LocalDateTime.parse(startDateString + "T00:00:00");
+
+        // 회원 가입
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new CreateMemberRequest("doraemon1", "doradora123", null, Role.ADMIN))
+                .when()
+                .post("/members")
+                .then().log().all()
+                .statusCode(200);
+
+        // 로그인하여 토큰 추출
+        LoginResponse loginResponse = given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest("doraemon1", "doradora123"))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract().as(LoginResponse.class);
+
+        // 캠페인 생성
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new CampaignRequestDto(
+                        "",
+                        "",
+                        LocalDateTime.parse("2025-01-01T00:00:00"),
+                        LocalDateTime.parse("2025-01-07T00:00:00"),
+                        "",
+                        1,
+                        1L))
+                .when()
+                .post("/campaigns")
+                .then().log().all()
+                .statusCode(200);
+
+        // 리뷰 생성
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new ReviewRequest(
+                        1L,
+                        "캠페인",
+                        5,
+                        1L))
+                .when()
+                .post("/reviews")
+                .then()
+                .statusCode(200);
+
+        // 리뷰 수정
+        String updatedReviewText = "수정된 캠페인 리뷰";
+        int updatedRating = 4;
+
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + loginResponse.accessToken())  // Authorization header에 토큰 포함
+                .pathParam("reviewId", 1)  // 리뷰 ID를 URL 파라미터로 전달
+                .body(new ReviewRequest(
+                        1L,
+                        updatedReviewText,
+                        updatedRating,
+                        1L))  // 수정된 리뷰 내용을 body에 전달
+                .when()
+                .put("/reviews/{reviewId}")  // 리뷰 수정 API 호출
+                .then().log().all()
+                .statusCode(200);
+    }
 }
