@@ -1,13 +1,11 @@
 package tt.trialTales;
 
-import io.restassured.RestAssured;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import tt.trialTales.campaign.*;
 import tt.trialTales.member.Member;
 import tt.trialTales.member.MemberRepository;
@@ -23,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
-class CampaignTest {
+class CampaignServiceTest {
 
     @Autowired
     private CampaignService campaignService;
