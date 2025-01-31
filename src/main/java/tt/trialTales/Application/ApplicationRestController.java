@@ -49,9 +49,9 @@ public class ApplicationRestController {
     }
 
     //승인 상태별 신청서 조회
-    @GetMapping("applications/status/{status}")
+    @GetMapping("applications/approval")
     public List<ReadApplicationResponse>findAppsByStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
-                                                          @PathVariable Status status){
+                                                         @RequestParam(required = false) Status status){
 
         Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
 
