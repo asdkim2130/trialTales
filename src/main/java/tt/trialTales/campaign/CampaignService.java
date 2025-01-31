@@ -90,7 +90,9 @@ public class CampaignService {
         System.out.println("모집 종료 상태 업데이트 완료: " + expiredCampaigns.size() + "개의 캠페인");
     }
 
-    // 엔티티를 DTO로 변환하는 메서드
+
+    // 엔티티 -> DTO로 변환
+
     private CampaignResponseDto mapToDto(Campaign campaign) {
         return new CampaignResponseDto(
                 campaign.getId(),

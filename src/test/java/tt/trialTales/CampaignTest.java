@@ -1,6 +1,8 @@
 package tt.trialTales;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 

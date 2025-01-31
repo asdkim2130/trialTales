@@ -28,7 +28,7 @@ public class ReviewService {
     //**리뷰작성 서비스로직
     public void save(ReviewRequest request) {
 
-        Campaign campaign = campaignRepository.findById(request.campaign().getId()).orElseThrow();
+        Campaign campaign = campaignRepository.findById(request.campaignId()).orElseThrow();
 
         reviewRepository.save(new Review(
                 request.userId(),
@@ -75,14 +75,17 @@ public class ReviewService {
         }
 
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("리뷰를 찾을 수 없습니다."));
+
+        Campaign campaign = campaignRepository.findById(reviewRequest.campaignId())
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 캠페인 id입니다"));
 
         //** 리뷰 수정
         review.update(
                 reviewRequest.userId(),
                 reviewRequest.content(),
                 reviewRequest.rating(),
-                reviewRequest.campaign());  // update 메서드를 통해 리뷰 업데이트
+                campaign);  // update 메서드를 통해 리뷰 업데이트
     }
 
     //** 리뷰 rating 순으로 오름차순 로직
