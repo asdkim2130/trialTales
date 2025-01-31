@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import tt.trialTales.campaign.Campaign;
 import tt.trialTales.campaign.CampaignRequestDto;
-import tt.trialTales.member.CreateMemberRequest;
-import tt.trialTales.member.Member;
-import tt.trialTales.member.Role;
+import tt.trialTales.member.*;
 import tt.trialTales.review.ReviewRequest;
 import tt.trialTales.review.ReviewResponse;
 
@@ -89,5 +87,72 @@ public class ReviewTest {
         // 응답 본문 검증: assertThat 사용
         assertThat(responses).hasSize(1);
         assertThat(responses.get(0).Content()).isEqualTo("캠페인");
+    }
+
+    @Test
+    public void 리뷰삭제() {
+        // 날짜 문자열을 LocalDateTime으로 변환
+        String startDateString = "2024-01-21";
+        LocalDateTime startDate = LocalDateTime.parse(startDateString + "T00:00:00");
+
+        // 회원 가입
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new CreateMemberRequest("doraemon1", "doradora123", null, Role.ADMIN))
+                .when()
+                .post("/members")
+                .then().log().all()
+                .statusCode(200);
+
+        // 로그인하여 토큰 추출
+        LoginResponse LoginResponse = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest("doraemon1", "doradora123"))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
+
+        // 캠페인 생성
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new CampaignRequestDto(
+                        "",
+                        "",
+                        LocalDateTime.parse("2025-01-01T00:00:00"),
+                        LocalDateTime.parse("2025-01-07T00:00:00"),
+                        "",
+                        1,
+                        1L))
+                .when()
+                .post("/campaigns")
+                .then().log().all()
+                .statusCode(200);
+
+        // 리뷰 생성
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new ReviewRequest(
+                        1L,
+                        "캠페인",
+                        5,
+                        1L))
+                .when()
+                .post("/reviews")
+                .then()
+                .statusCode(200);
+
+        // 리뷰 삭제
+        given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + LoginResponse.accessToken())
+                .pathParam("reviewId", 1)
+                .when()
+                .delete("/reviews/{reviewId}")
+                .then().log().all()
+                .statusCode(200);
     }
 }
