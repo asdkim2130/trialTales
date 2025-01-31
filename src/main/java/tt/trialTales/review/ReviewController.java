@@ -41,8 +41,7 @@ public class ReviewController {
     @DeleteMapping("/reviews/{reviewId}")
     public void deleteReview(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
-            @PathVariable Long reviewId,
-            @RequestBody ReviewRequest reviewRequest) {
+            @PathVariable Long reviewId) {
 
         Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
         reviewService.deleteReview(reviewId,member);
