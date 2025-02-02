@@ -31,6 +31,12 @@ public class Application {
     @Column(nullable = false)
     private Status status = Status.PENDING;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
+    @CreatedDate
+    private LocalDateTime deletedAt;
+
     protected Application() {
     }
 
@@ -41,6 +47,11 @@ public class Application {
         this.snsUrl = snsUrl;
         this.applicationDate = applicationDate;
         this.status = status;
+    }
+
+    public Application(boolean isDeleted, LocalDateTime deletedAt) {
+        this.isDeleted = isDeleted;
+        this.deletedAt = deletedAt;
     }
 
     public Application(String snsUrl, Campaign campaign, Member member) {
@@ -75,6 +86,22 @@ public class Application {
 
     public Status getStatus() {
         return status;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public void statusChange(){
