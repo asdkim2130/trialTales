@@ -62,9 +62,8 @@ public class ApplicationService {
             throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
         }
 
-        Application application = applicationRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("해당 신청 내역이 존재하지 않습니다.")
-        );
+        Application application = queryRepository.findActiveApplication(id).orElseThrow(
+                () -> new NoSuchElementException("해당 신청 내역이 존재하지 않습니다."));
 
         Campaign campaign = application.getCampaign();
 
@@ -113,7 +112,7 @@ public class ApplicationService {
     }
 
 
-    //신청 삭제
+    //신청 삭제(soft delete)
     @Transactional
     public void delete(Long id, Member loginMember) {
 
@@ -125,7 +124,7 @@ public class ApplicationService {
                 () -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다.")
         );
 
-        applicationRepository.delete(application);
+        queryRepository.softDeleteById(id);
     }
 
 
