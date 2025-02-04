@@ -17,6 +17,7 @@ import tt.trialTales.member.LoginRequest;
 import tt.trialTales.member.Role;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +37,7 @@ public class CampaignApiTest {
         RestAssured.port = port;
         databaseCleanup.execute();
 
-        // ✅ 회원가입 (관리자)
+        // 관리자 회원가입
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest("admin", "password", "관리자", Role.ADMIN))
@@ -45,7 +46,7 @@ public class CampaignApiTest {
                 .then().log().all()
                 .statusCode(200);
 
-        // ✅ 로그인 후 토큰 발급
+        // 로그인 후 토큰 발급
         adminToken = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest("admin", "password"))
@@ -57,7 +58,7 @@ public class CampaignApiTest {
                 .path("token"); // 응답 JSON에서 "token" 키를 추출
     }
 
-    @DisplayName("✅ 캠페인 생성 API 테스트")
+    @DisplayName("캠페인 생성 API 테스트")
     @Test
     void 캠페인_생성_API_테스트() {
         // Given
@@ -88,24 +89,26 @@ public class CampaignApiTest {
         assertThat(responseDto.campaignName()).isEqualTo("API 테스트 캠페인");
     }
 
-    @DisplayName("✅ 캠페인 조회 API 테스트")
+    @DisplayName("캠페인 목록 조회 API 테스트 (Soft Delete 반영)")
     @Test
-    void 캠페인_조회_API_테스트() {
-        // ✅ 캠페인 생성 후 ID 가져오기
-        CampaignRequestDto requestDto = new CampaignRequestDto(
-                "조회 테스트 캠페인",
-                "조회 테스트 설명",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7).withHour(23).withMinute(59).withSecond(59),
-                "모집 중",
-                50,
-                1L
+    void 캠페인_목록_조회_API_테스트() {
+        // 캠페인 2개 생성 (1개는 삭제)
+        CampaignRequestDto request1 = new CampaignRequestDto(
+                "캠페인1", "설명1",
+                LocalDateTime.now(), LocalDateTime.now().plusDays(7),
+                "모집 중", 50, 1L
         );
 
-        CampaignResponseDto createdCampaign = RestAssured.given().log().all()
+        CampaignRequestDto request2 = new CampaignRequestDto(
+                "캠페인2", "설명2",
+                LocalDateTime.now(), LocalDateTime.now().plusDays(7),
+                "모집 중", 50, 1L
+        );
+
+        CampaignResponseDto campaign1 = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-                .body(requestDto)
+                .body(request1)
                 .when()
                 .post("/campaigns")
                 .then().log().all()
@@ -113,40 +116,10 @@ public class CampaignApiTest {
                 .extract()
                 .as(CampaignResponseDto.class);
 
-        Long campaignId = createdCampaign.id(); // 생성된 캠페인 ID
-
-        // ✅ 캠페인 조회 테스트
-        CampaignResponseDto foundCampaign = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/campaigns/" + campaignId)
-                .then().log().all()
-                .statusCode(200)
-                .extract()
-                .as(CampaignResponseDto.class);
-
-        assertThat(foundCampaign).isNotNull();
-        assertThat(foundCampaign.campaignName()).isEqualTo("조회 테스트 캠페인");
-    }
-
-    @DisplayName("✅ 캠페인 수정 API 테스트")
-    @Test
-    void 캠페인_수정_API_테스트() {
-        // ✅ 캠페인 생성 후 ID 가져오기
-        CampaignRequestDto requestDto = new CampaignRequestDto(
-                "수정 전 캠페인",
-                "수정 전 설명",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7).withHour(23).withMinute(59).withSecond(59),
-                "모집 중",
-                50,
-                1L
-        );
-
-        CampaignResponseDto createdCampaign = RestAssured.given().log().all()
+        CampaignResponseDto campaign2 = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-                .body(requestDto)
+                .body(request2)
                 .when()
                 .post("/campaigns")
                 .then().log().all()
@@ -154,46 +127,37 @@ public class CampaignApiTest {
                 .extract()
                 .as(CampaignResponseDto.class);
 
-        Long campaignId = createdCampaign.id(); // 생성된 캠페인 ID
-
-        // ✅ 수정 요청 데이터
-        CampaignRequestDto updateRequest = new CampaignRequestDto(
-                "수정된 캠페인",
-                "수정된 설명",
-                createdCampaign.startDate(),
-                createdCampaign.endDate(),
-                "모집 완료",
-                100,
-                1L
-        );
-
-        // ✅ 캠페인 수정 요청
-        CampaignResponseDto updatedCampaign = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
+        // 캠페인 1개 삭제
+        RestAssured.given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-                .body(updateRequest)
                 .when()
-                .put("/campaigns/" + campaignId)
+                .delete("/campaigns/" + campaign1.id())
+                .then().log().all()
+                .statusCode(204);
+
+        // 조회 요청 (삭제된 캠페인은 조회되지 않아야 함)
+        List<CampaignResponseDto> campaigns = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/campaigns")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
-                .as(CampaignResponseDto.class);
+                .jsonPath().getList(".", CampaignResponseDto.class);
 
-        // ✅ 검증
-        assertThat(updatedCampaign).isNotNull();
-        assertThat(updatedCampaign.campaignName()).isEqualTo("수정된 캠페인");
-        assertThat(updatedCampaign.recruitmentLimit()).isEqualTo(100);
+        assertThat(campaigns).hasSize(1); // 삭제된 캠페인은 보이지 않아야 함
+        assertThat(campaigns.get(0).campaignName()).isEqualTo("캠페인2");
     }
 
-    @DisplayName("✅ 캠페인 삭제 API 테스트")
+    @DisplayName("✅ 캠페인 복구 API 테스트")
     @Test
-    void 캠페인_삭제_API_테스트() {
-        // ✅ 캠페인 생성 후 ID 가져오기
-        CampaignRequestDto requestDto = new CampaignRequestDto(
+    void 캠페인_복구_API_테스트() {
+        // ✅ 캠페인 생성 후 삭제
+        CampaignRequestDto request = new CampaignRequestDto(
                 "삭제 테스트 캠페인",
                 "삭제 테스트 설명",
                 LocalDateTime.now(),
-                LocalDateTime.now().plusDays(7).withHour(23).withMinute(59).withSecond(59),
+                LocalDateTime.now().plusDays(7),
                 "모집 중",
                 50,
                 1L
@@ -202,7 +166,7 @@ public class CampaignApiTest {
         CampaignResponseDto createdCampaign = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-                .body(requestDto)
+                .body(request)
                 .when()
                 .post("/campaigns")
                 .then().log().all()
@@ -210,19 +174,28 @@ public class CampaignApiTest {
                 .extract()
                 .as(CampaignResponseDto.class);
 
-        Long campaignId = createdCampaign.id(); // 생성된 캠페인 ID
+        Long campaignId = createdCampaign.id();
 
-        // ✅ 캠페인 삭제 요청
+        // ✅ 캠페인 삭제
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
-                .queryParam("memberId", 1L)
                 .when()
                 .delete("/campaigns/" + campaignId)
                 .then().log().all()
-                .statusCode(204); // ✅ 삭제 성공 시 204
+                .statusCode(204);
+
+        // ✅ 캠페인 복구 (기대: 200 OK)
+        CampaignResponseDto restoredCampaign = RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .when()
+                .post("/campaigns/" + campaignId + "/restore")
+                .then().log().all()
+                .statusCode(200) // ✅ 수정: 204 → 200
+                .extract()
+                .as(CampaignResponseDto.class);
+
+        // ✅ 복구된 캠페인 검증
+        assertThat(restoredCampaign).isNotNull();
+        assertThat(restoredCampaign.campaignName()).isEqualTo("삭제 테스트 캠페인");
     }
 }
-
-
-

@@ -1,13 +1,9 @@
 package tt.trialTales.campaign;
 
 import jakarta.persistence.*;
-import tt.trialTales.Application.Application;
 import tt.trialTales.member.Member;
-import tt.trialTales.review.Review;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Campaign {
@@ -18,7 +14,7 @@ public class Campaign {
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member; // 캠페인을 생성한 사용자
+    private Member member;
 
     @Column(nullable = false)
     private String campaignName;
@@ -27,14 +23,16 @@ public class Campaign {
     private String description;
 
     private LocalDateTime startDate;
-
     private LocalDateTime endDate;
 
     @Column(nullable = false)
-    private String status; // "모집 중", "모집 완료"
+    private String status;
 
     @Column(nullable = false)
     private int recruitmentLimit;
+
+    @Column(nullable = false)
+    private boolean deleted = false; // ✅ Soft Delete 추가
 
     protected Campaign() {}
 
@@ -52,24 +50,12 @@ public class Campaign {
         return id;
     }
 
-    public Member getMember() {
-        return member;
-    }
-
     public String getCampaignName() {
         return campaignName;
     }
 
-    public void setCampaignName(String campaignName) {
-        this.campaignName = campaignName;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LocalDateTime getStartDate() {
@@ -84,7 +70,7 @@ public class Campaign {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(String status) { // ✅ 모집 상태 업데이트 가능하도록 setter 추가
         this.status = status;
     }
 
@@ -92,7 +78,21 @@ public class Campaign {
         return recruitmentLimit;
     }
 
-    public void setRecruitmentLimit(int recruitmentLimit) {
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void delete() {
+        this.deleted = true; // ✅ Soft Delete 처리
+    }
+
+    public void restore() {
+        this.deleted = false; // ✅ 캠페인 복구 기능 추가
+    }
+
+    public void updateCampaign(String campaignName, String description, int recruitmentLimit) {
+        this.campaignName = campaignName;
+        this.description = description;
         this.recruitmentLimit = recruitmentLimit;
     }
 }

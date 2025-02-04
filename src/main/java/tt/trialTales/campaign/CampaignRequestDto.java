@@ -1,7 +1,5 @@
 package tt.trialTales.campaign;
 
-import tt.trialTales.member.Member;
-
 import java.time.LocalDateTime;
 
 
