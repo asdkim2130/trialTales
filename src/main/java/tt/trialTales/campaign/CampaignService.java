@@ -8,7 +8,6 @@ import tt.trialTales.member.MemberRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Service
 public class CampaignService {
 
@@ -26,89 +25,90 @@ public class CampaignService {
         LocalDateTime endDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59);
 
         Campaign campaign = new Campaign(
-                member,
-                requestDto.campaignName(),
-                requestDto.description(),
-                now,
-                endDate,
-                "모집 중",
-                requestDto.recruitmentLimit()
+                member, requestDto.campaignName(), requestDto.description(),
+                now, endDate, "모집 중", requestDto.recruitmentLimit()
         );
 
         Campaign savedCampaign = campaignRepository.save(campaign);
         return mapToDto(savedCampaign);
     }
 
-    // 캠페인 조회 (ID로 조회)
+    // Soft Delete 적용: 삭제된 캠페인은 조회되지 않음
     public CampaignResponseDto getCampaignByIdOrThrow(Long campaignId) {
         Campaign campaign = campaignRepository.findById(campaignId)
+                .filter(c -> !c.isDeleted()) // 삭제되지 않은 캠페인만 조회
                 .orElseThrow(() -> new IllegalArgumentException("해당 캠페인을 찾을 수 없습니다. ID: " + campaignId));
         return mapToDto(campaign);
     }
 
     // 캠페인 수정
     public CampaignResponseDto updateCampaignOrThrow(Long campaignId, CampaignRequestDto requestDto) {
-        Campaign existingCampaign = campaignRepository.findById(campaignId)
+        Campaign campaign = campaignRepository.findById(campaignId)
+                .filter(c -> !c.isDeleted())
                 .orElseThrow(() -> new IllegalArgumentException("해당 캠페인을 찾을 수 없습니다. ID: " + campaignId));
 
-        existingCampaign.setCampaignName(requestDto.campaignName());
-        existingCampaign.setDescription(requestDto.description());
-        existingCampaign.setRecruitmentLimit(requestDto.recruitmentLimit());
+        campaign.updateCampaign(requestDto.campaignName(), requestDto.description(), requestDto.recruitmentLimit());
+        campaignRepository.save(campaign);
 
-        Campaign updatedCampaign = campaignRepository.save(existingCampaign);
-        return mapToDto(updatedCampaign);
+        return mapToDto(campaign);
     }
 
-    // 캠페인 삭제
+    // Soft Delete 적용
     public void deleteCampaignOrThrow(Long campaignId) {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 캠페인을 찾을 수 없습니다. ID: " + campaignId));
-        campaignRepository.delete(campaign);
+        campaign.delete();
+        campaignRepository.save(campaign);
     }
 
-    // 모집 종료된 캠페인 조회
+    // 캠페인 복구 기능: 복구 후 DTO 반환
+    public CampaignResponseDto restoreCampaignOrThrow(Long campaignId) {
+        Campaign campaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 캠페인을 찾을 수 없습니다. ID: " + campaignId));
+
+        campaign.restore();
+        campaignRepository.save(campaign);
+
+        return mapToDto(campaign);
+    }
+
+    // 기존 모집 종료된 캠페인 조회 기능 유지 (Soft Delete 반영)
     public List<CampaignResponseDto> getExpiredCampaigns() {
         LocalDateTime now = LocalDateTime.now();
         return campaignRepository.findByEndDateBefore(now)
                 .stream()
+                .filter(c -> !c.isDeleted())
                 .map(this::mapToDto)
                 .toList();
     }
 
-    // 스케줄링 작업: 모집 종료 상태 업데이트
+    // 기존 스케줄러 기능 유지 (Soft Delete 반영)
     @Scheduled(cron = "0 0 0 * * *")
     public void updateExpiredCampaigns() {
         LocalDateTime now = LocalDateTime.now();
         List<Campaign> expiredCampaigns = campaignRepository.findByEndDateBefore(now);
 
         for (Campaign campaign : expiredCampaigns) {
-            if ("모집 중".equals(campaign.getStatus())) {
+            if (!campaign.isDeleted() && "모집 중".equals(campaign.getStatus())) {
                 campaign.setStatus("모집 완료");
                 campaignRepository.save(campaign);
             }
         }
-        System.out.println("모집 종료 상태 업데이트 완료: " + expiredCampaigns.size() + "개의 캠페인");
     }
-
-
-    // 엔티티 -> DTO로 변환
 
     private CampaignResponseDto mapToDto(Campaign campaign) {
         return new CampaignResponseDto(
-                campaign.getId(),
-                campaign.getCampaignName(),
-                campaign.getDescription(),
-                campaign.getStartDate(),
-                campaign.getEndDate(),
-                campaign.getStatus(),
-                campaign.getRecruitmentLimit()
+                campaign.getId(), campaign.getCampaignName(), campaign.getDescription(),
+                campaign.getStartDate(), campaign.getEndDate(),
+                campaign.getStatus(), campaign.getRecruitmentLimit()
         );
     }
+
+    // 모집 종료된 캠페인 조회 시 Soft Delete 적용
+    public List<CampaignResponseDto> getAllCampaigns() {
+        return campaignRepository.findByDeletedFalse()
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+    }
 }
-
-//    // 캠페인 목록 조회
-//    public List<Campaign> getAllCampaigns() {
-//        return campaignRepository.findAll();
-//    }
-//dfdf
-
