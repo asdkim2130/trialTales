@@ -35,6 +35,9 @@ public class ApplicationService {
         Campaign campaign = campaignRepository.findById(request.campaignId()).orElseThrow(
                 () -> new NoSuchElementException("해당 캠페인을 찾을 수 없습니다.")
         );
+        if(!campaign.getStatus().equals("모집 중")){
+            throw new NoSuchElementException("모집 중인 캠페인만 신청 가능합니다.");
+        }
 
         Member member = memberRepository.findById(request.memberId()).orElseThrow(
                 () -> new NoSuchElementException("유효하지 않은 사용자입니다.")
