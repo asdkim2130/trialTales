@@ -28,11 +28,13 @@ public class ApplicationQueryRepository {
         if(statusFilter == Status.PENDING){
             return jpaQueryFactory
                     .selectFrom(application)
-                    .where(statusIsPending())
+                    .where(statusIsPending()
+                            .and(application.isDeleted.isFalse()))
                     .fetch();
         }return jpaQueryFactory
                 .selectFrom(application)
-                .where(statusIsApproved())
+                .where(statusIsApproved()
+                        .and(application.isDeleted.isFalse()))
                 .fetch();
     }
 
@@ -48,6 +50,7 @@ public class ApplicationQueryRepository {
     public void softDeleteById(Long id){
         jpaQueryFactory.update(application)
                 .set(application.deletedAt, LocalDateTime.now())
+                .set(application.isDeleted, true)
                 .where(application.id.eq(id))
                 .execute();
     }
@@ -56,14 +59,14 @@ public class ApplicationQueryRepository {
     public Optional<Application> findActiveApplication(Long id){
         return Optional.ofNullable(jpaQueryFactory.selectFrom(application)
                 .where(application.id.eq(id)
-                        .and(application.deletedAt.isNull()))
+                        .and(application.isDeleted.isFalse()))
                 .fetchOne());
     }
 
     public List<Application> findAllActiveApplications(Long memberId){
         return jpaQueryFactory.selectFrom(application)
                 .where(application.member.id.eq(memberId)
-                        .and(application.deletedAt.isNull()))
+                        .and(application.isDeleted.isFalse()))
                 .fetch();
     }
 
