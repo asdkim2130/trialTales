@@ -197,5 +197,7 @@ public class CampaignApiTest {
         // ✅ 복구된 캠페인 검증
         assertThat(restoredCampaign).isNotNull();
         assertThat(restoredCampaign.campaignName()).isEqualTo("삭제 테스트 캠페인");
+
+        //
     }
 }
