@@ -45,7 +45,8 @@ public class ApplicationService {
 
         Application application = new Application(request.snsUrl(),
                 campaign,
-                member);
+                member,
+                request.applicationDate());
 
         applicationRepository.save(application);
 
