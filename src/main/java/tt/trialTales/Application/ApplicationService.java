@@ -44,6 +44,7 @@ public class ApplicationService {
         );
 
         Application application = new Application(request.snsUrl(),
+                request.email(),
                 campaign,
                 member,
                 request.applicationDate());
