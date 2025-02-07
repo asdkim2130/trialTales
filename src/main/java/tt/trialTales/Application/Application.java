@@ -94,6 +94,10 @@ public class Application {
         return status;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
