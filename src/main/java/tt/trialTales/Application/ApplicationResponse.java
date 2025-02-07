@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record ApplicationResponse(Long id,
                                   Member member,
                                   Campaign campaign,
+                                  String email,
                                   String snsUrl,
                                   LocalDateTime applicationDate,
                                   Status status) {

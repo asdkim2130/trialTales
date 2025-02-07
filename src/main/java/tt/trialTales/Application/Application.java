@@ -23,9 +23,13 @@ public class Application {
     private Campaign campaign;
 
     @Column(nullable = false)
+    private  String email;
+
+    @Column(nullable = false)
     private String snsUrl;
 
     @CreatedDate
+    @Column(nullable = false)
     private LocalDateTime applicationDate;
 
     @Column(nullable = false)
@@ -54,10 +58,12 @@ public class Application {
         this.deletedAt = deletedAt;
     }
 
-    public Application(String snsUrl, Campaign campaign, Member member) {
+    public Application(String email, String snsUrl, Campaign campaign, Member member, LocalDateTime applicationDate) {
+        this.email = email;
         this.snsUrl = snsUrl;
         this.campaign = campaign;
         this.member = member;
+        this.applicationDate = applicationDate;
     }
 
     public Application(String snsUrl) {
@@ -86,6 +92,10 @@ public class Application {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public boolean isDeleted() {

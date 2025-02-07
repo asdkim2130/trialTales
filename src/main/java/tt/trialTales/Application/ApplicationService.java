@@ -43,15 +43,18 @@ public class ApplicationService {
                 () -> new NoSuchElementException("유효하지 않은 사용자입니다.")
         );
 
-        Application application = new Application(request.snsUrl(),
+        Application application = new Application(request.email(),
+                request.snsUrl(),
                 campaign,
-                member);
+                member,
+                request.applicationDate());
 
         applicationRepository.save(application);
 
         return new ApplicationResponse(application.getId(),
                 member,
                 campaign,
+                application.getEmail(),
                 application.getSnsUrl(),
                 application.getApplicationDate(),
                 application.getStatus());
@@ -72,6 +75,7 @@ public class ApplicationService {
 
         return new ReadApplicationResponse(application.getId(),
                 campaign,
+                application.getEmail(),
                 application.getSnsUrl(),
                 application.getApplicationDate(),
                 application.getStatus());
@@ -89,6 +93,7 @@ public class ApplicationService {
                 .map(application -> new ReadApplicationResponse(
                         application.getId(),
                         application.getCampaign(),
+                        application.getEmail(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
                         application.getStatus()
@@ -107,6 +112,7 @@ public class ApplicationService {
                 .map(application -> new ReadApplicationResponse(
                         application.getId(),
                         application.getCampaign(),
+                        application.getEmail(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
                         application.getStatus()
@@ -145,6 +151,7 @@ public class ApplicationService {
         application.statusChange();
 
         return new UpdateApplicationResponse(application.getId(),
+                application.getEmail(),
                 application.getSnsUrl(),
                 application.getApplicationDate(),
                 application.getStatus());
