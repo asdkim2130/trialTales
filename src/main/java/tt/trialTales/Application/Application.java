@@ -23,6 +23,9 @@ public class Application {
     private Campaign campaign;
 
     @Column(nullable = false)
+    private  String email;
+
+    @Column(nullable = false)
     private String snsUrl;
 
     @CreatedDate
@@ -55,7 +58,8 @@ public class Application {
         this.deletedAt = deletedAt;
     }
 
-    public Application(String snsUrl, Campaign campaign, Member member, LocalDateTime applicationDate) {
+    public Application(String email, String snsUrl, Campaign campaign, Member member, LocalDateTime applicationDate) {
+        this.email = email;
         this.snsUrl = snsUrl;
         this.campaign = campaign;
         this.member = member;
