@@ -1,6 +1,7 @@
 import React from "react";
+import { campaignData } from "./tempData";
 
-export function ImageBox({ campaignSample }: { campaignSample: tempData })  {
+export function ImageBox({ campaignSample }: { campaignSample: campaignData })  {
     return (
         <div className="w-full h-56 overflow-hidden">
         <img
@@ -14,7 +15,7 @@ export function ImageBox({ campaignSample }: { campaignSample: tempData })  {
 );
 }
 
-export function CampaignInfo({ campaignSample }: { campaignSample: tempData }) {
+export function CampaignInfo({ campaignSample }: { campaignSample: campaignData }) {
     return (
         <div className="p-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">{campaignSample.campaignName}</h2>
