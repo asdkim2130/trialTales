@@ -1,0 +1,94 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(to right, #ffffff, #fde2ff);
+    min-height: 100vh;
+}
+
+.title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: max( 400, bold);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #0d91f0;
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.reviewBox {
+    padding: 16px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reviewBox:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.campaignName {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fde2ff;
+}
+
+.content {
+    font-size: 16px;
+    color: #0a0a0a;
+}
+
+.rating {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff9800;
+}
+
+.date {
+    font-size: 14px;
+    color: #666;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.editButton, .deleteButton {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.editButton {
+    background: #4caf50;
+    color: white;
+    border: none;
+}
+
+.editButton:hover {
+    background: #43a047;
+    transform: scale(1.05);
+}
+
+.deleteButton {
+    background: #e53935;
+    color: white;
+    border: none;
+}
+
+.deleteButton:hover {
+    background: #d32f2f;
+    transform: scale(1.05);
+}
