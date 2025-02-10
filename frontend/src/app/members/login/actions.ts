@@ -1,5 +1,7 @@
-"use server"
+"use server";
 
+import { cookies } from "next/headers";
+import { signIn } from "../../api";
 import { redirect } from "next/navigation";
 
 export async function 로그인처리(formData: FormData) {
@@ -11,11 +13,12 @@ export async function 로그인처리(formData: FormData) {
         return;
     }
 
-    const 입력데이터 = {
-        아이디,
-        비밀번호,
-    };
+    const token = await signIn();
+    const cookieStore = await cookies();
+    cookieStore.set("token", token, {
+        httpOnly: true,
+    });
 
-    console.log(입력데이터);
-    redirect('login');
+    console.log("로그인 성공, 토큰 저장됨");
+    redirect("/");
 }
