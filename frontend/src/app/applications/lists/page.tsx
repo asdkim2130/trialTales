@@ -1,17 +1,17 @@
 "use client";
-import { campaignData } from "../tempData";
-import { appList } from "./listData";
 
+import { appList } from "./listData";
 import { useState } from "react";
+import { ListTable } from "@/app/applications/lists/listTable";
 
 const ProductTable: React.FC = () => {
   const [filter, setFilter] = useState<"All" | "PENDING" | "APPROVED">("All");
 
   // 필터링된 데이터
-  const filteredProducts =
-    filter === "All"
-      ? appList
-      : appList.filter((list) => list.appStatus.toUpperCase() === filter);
+  const filteredList = appList.filter((app) => {
+    if (filter === "All") return true;
+    return app.appStatus === filter;
+  });
 
   return (
     <div className="p-6">
@@ -36,48 +36,10 @@ const ProductTable: React.FC = () => {
           APPROVED
         </button>
       </div>
-
-      {/* 테이블 */}
-      <table className="w-full table-auto border-separate border-spacing-0">
-        <thead>
-          <tr className="text-left">
-            <th className="p-3">Image</th>
-            <th className="p-3">campaignName</th>
-            <th className="p-3">Status</th>
-            <th className="p-3">recruitmentLimit</th>
-            <th className="p-3">Created</th>
-            <th className="p-3">ApplicationDate</th>
-            <th className="p-3">AppStatus</th>
-            <th className="p-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appList.map((app) => (
-            <tr key={app.id} className="border-b">
-              <td className="p-3">
-                <img
-                  src={app.campaign?.imageSrc}
-                  alt={app.campaign?.campaignName}
-                  className="w-16 h-16 object-cover"
-                />
-              </td>
-              <td className="p-3">{app.campaign?.campaignName}</td>
-              <td className="p-3">${app.campaign?.status}</td>
-              <td className="p-3">{app.campaign?.recruitmentLimit}</td>
-              <td className="p-3">{app.campaign?.startDate}</td>
-              <td className="p-3">{app.applicationDate}</td>
-              <td className="p-3">{app.appStatus}</td>
-              <td className="p-3">
-                <button className="text-blue-500 hover:text-blue-700">
-                  Toggle menu
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 };
 
-export default ProductTable;
+export default function ApplicationListPage() {
+  return <ListTable list={undefined} />;
+}
