@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Filter } from "./Filter"; // Filter 컴포넌트를 import
-import { ListTable } from "@/app/applications/approval/listTable"; // 목록을 보여주는 컴포넌트
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [filter, setFilter] = useState<"All" | "PENDING" | "APPROVED">("All");

@@ -1,4 +1,3 @@
-import { campaignSample } from "../tempData";
 import { appData } from "./appData";
 
 interface Applications {
@@ -21,12 +20,8 @@ interface AppList extends Applications {
 }
 
 export const appList: AppList[] = appData.map((app) => {
-  const campaignData = campaignSample.find(
-    (campaign) => campaign.id === app.id,
-  );
-
   return {
     ...app,
-    campaign: campaignData || null,
+    campaign: app.campaign || null,
   };
 });

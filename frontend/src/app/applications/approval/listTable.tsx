@@ -1,5 +1,4 @@
 import { appList } from "./listData";
-import React, { useState } from "react";
 
 export function ListTable({ list }: { list: appList }) {
   return (
