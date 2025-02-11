@@ -47,33 +47,45 @@ export function ApplicationInfo({ applicationSample }: ImageBoxProps) {
       <table className="w-full table-auto border-separate border-spacing-y-2">
         <tbody>
           <tr>
-            <td className="border-b px-4 py-2 font-semibold w-1/3">사용자ID</td>
+            <td className="border-b px-4 py-2 font-semibold w-1/3 text-center">
+              사용자ID
+            </td>
             <td className="border-b px-4 py-2">
               {applicationSample.member.username}
             </td>
           </tr>
           <tr>
-            <td className="border-b px-4 py-2 font-semibold w-1/3">닉네임</td>
+            <td className="border-b px-4 py-2 font-semibold w-1/3 text-center">
+              닉네임
+            </td>
             <td className="border-b px-4 py-2">
               {applicationSample.member.nickname}
             </td>
           </tr>
           <tr>
-            <td className="border-b px-4 py-2 font-semibold w-1/3">Email</td>
+            <td className="border-b px-4 py-2 font-semibold w-1/3 text-center">
+              Email
+            </td>
             <td className="border-b px-4 py-2">{applicationSample.email}</td>
           </tr>
           <tr>
-            <td className="border-b px-4 py-2 font-semibold w-1/3">SNS 계정</td>
+            <td className="border-b px-4 py-2 font-semibold w-1/3 text-center">
+              SNS 계정
+            </td>
             <td className="border-b px-4 py-2">{applicationSample.snsUrl}</td>
           </tr>
           <tr>
-            <td className="border-b px-4 py-2 font-semibold w-1/3">신청날짜</td>
+            <td className="border-b px-4 py-2 font-semibold w-1/3 text-center">
+              신청날짜
+            </td>
             <td className="border-b px-4 py-2">
               {applicationSample.applicationDate}
             </td>
           </tr>
           <tr>
-            <td className="border-b px-4 py-2 font-semibold w-1/3">승인상태</td>
+            <td className="border-b px-4 py-2 font-semibold w-1/3 text-center">
+              승인상태
+            </td>
             <td className="border-b px-4 py-2">{applicationSample.status}</td>
           </tr>
         </tbody>
@@ -84,7 +96,7 @@ export function ApplicationInfo({ applicationSample }: ImageBoxProps) {
             type="submit"
             className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            approve
+            Approve
           </button>
         </Link>
       </div>

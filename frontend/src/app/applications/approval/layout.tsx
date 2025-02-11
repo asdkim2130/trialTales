@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/*네비게이션바*/}
       <nav className="bg-gray-800 text-white p-4 max-w-[1000px] mx-auto rounded-2xl mt-4">
         <div className="flex justify-between items-center">
-          <div className="text-lg font-bold">Application Dashboard</div>
+          <div className="text-lg font-bold">캠페인 신청 현황</div>
           <div className="flex space-x-4">
             <button
               onClick={() => setFilter("All")}

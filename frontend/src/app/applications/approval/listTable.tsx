@@ -7,14 +7,14 @@ export function ListTable({ list }: { list: appList }) {
       <table className="w-full table-auto border-separate border-spacing-0 bg-white rounded-lg shadow-lg max-w-[1000px] mx-auto">
         <thead>
           <tr className="text-center">
-            <th className="p-3 text-center">Image</th>
-            <th className="p-3 text-center">campaignName</th>
-            <th className="p-3 text-center">Status</th>
-            <th className="p-3 text-center">recruitmentLimit</th>
-            <th className="p-3 text-center">Created</th>
-            <th className="p-3 text-center">ApplicationDate</th>
-            <th className="p-3 text-center">AppStatus</th>
-            <th className="p-3 text-center">Actions</th>
+            <th className="p-3 text-center"> </th>
+            <th className="p-3 text-center">캠페인</th>
+            <th className="p-3 text-center">모집 상태</th>
+            <th className="p-3 text-center">모집 인원</th>
+            <th className="p-3 text-center">시작 날짜</th>
+            <th className="p-3 text-center">제출 날짜</th>
+            <th className="p-3 text-center">승인 상태</th>
+            <th className="p-3 text-center"> </th>
           </tr>
         </thead>
         <tbody>
