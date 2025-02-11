@@ -9,27 +9,41 @@
 }
 
 .title {
-    font-size: 24px;
+    font-size: 50px;
     font-weight: bold;
+    margin-bottom: 50px;
+}
+
+/* ✅ 강조된 제목 스타일 */
+.hotCampaignTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ff5733;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
 }
 
+/* ✅ 4열 그리드 유지 */
 .grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
 }
 
+/* ✅ 캠페인 카드 스타일 */
 .card {
+    position: relative;
     background-color: white;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+    overflow: hidden;
     display: flex;
-    flex-direction: column; /* ✅ 세로 정렬 */
+    flex-direction: column;
     align-items: center;
 }
 
@@ -37,22 +51,63 @@
     transform: scale(1.05);
 }
 
+/* ✅ 새로운 이미지 컨테이너 */
 .imageWrapper {
     width: 100%;
+    height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    border-radius: 8px 8px 0 0;
     overflow: hidden;
-    border-radius: 8px 8px 0 0; /* ✅ 상단 모서리 둥글게 */
 }
 
+/* ✅ 이미지 스타일 */
 .image {
     object-fit: cover;
     width: 100%;
-    height: 180px; /* ✅ 고정된 높이 */
-    border-radius: 8px;
+    height: 100%;
+    border-radius: 8px 8px 0 0;
 }
 
+/* ✅ 이미지 위에 표시되는 초록색 배지 (아이콘 추가) */
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #22c55e;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+
+/* ✅ 모집 마감 오버레이 */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* ✅ 모집 마감 상태일 때 오버레이 표시 */
+.card.closed .overlay {
+    opacity: 1;
+}
+
+/* ✅ 카드 내부 스타일 */
 .cardTitle {
     font-size: 16px;
     font-weight: bold;
@@ -73,3 +128,268 @@
     color: #0070f3;
     text-align: center;
 }
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.button {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* ✅ 신청 버튼 스타일 */
+.buttonApply {
+    background-color: #0070f3;
+    color: white;
+}
+
+.buttonApply:hover {
+    background-color: #005ac1;
+}
+
+/* ✅ 모집 마감일 경우 신청 버튼 비활성화 */
+.buttonApply:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+}
+
+/* ✅ 리뷰 버튼 스타일 */
+.buttonReview {
+    background-color: #FF8C00;
+    color: white;
+}
+
+.buttonReview:hover {
+    background-color: #4b5563;
+}
+
+/* ✅ 카드 스타일 유지 */
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* ✅ 버튼이 아래로 가도록 설정 */
+    min-height: 340px; /* ✅ 버튼이 잘리지 않도록 최소 높이 지정 */
+}
+
+/* 🔍 검색창 스타일 */
+.searchContainer {
+    display: flex;
+    justify-content: flex-end; /* 🔥 오른쪽 정렬 */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.searchInput {
+    width: 250px;  /* 기존보다 줄인 값 */
+    max-width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.cardDesc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    text-align: center;
+    white-space: pre-line;  /* ✅ 줄바꿈 적용 */
+}
+
+/* ✅ 배너 컨테이너 */
+.banner {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #ffcc80; /* 밝은 오렌지색 */
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.banner:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ 배너 텍스트 */
+.bannerText {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* ✅ 배너 버튼 */
+.bannerButton {
+    background-color: #ff7043; /* 좀 더 진한 오렌지 */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.bannerButton:hover {
+    background-color: #f4511e;
+}
+
+/* ✅ 페이지 레이아웃 */
+.pageLayout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* ✅ 세로 배너 (왼쪽)(인기캠페인모아보기) */
+.verticalBanner {
+    width: 180px;
+    height: 800px;
+    background-color: #ffe082;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 20px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.verticalBanner:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ 배너 텍스트 */
+.bannerText {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* ✅ 배너 버튼 */
+.bannerButton {
+    background-color: #ff7043;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.bannerButton:hover {
+    background-color: #f4511e;
+}
+
+/* ✅ 전체 페이지 배경색 추가 */
+.pageLayout {
+    background-color: #F4F4F4; /* 연한 회색 배경 */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px; /* ✅ 좌우 여백 추가 */
+}
+
+/* 🔍 검색창 컨테이너 */
+.searchContainer {
+    display: flex;
+    justify-content: flex-end; /* 🔥 오른쪽 정렬 */
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative; /* ✅ 위치 고정 */
+    z-index: 10; /* ✅ 다른 요소보다 위로 유지 */
+}
+
+/* 🔍 검색 입력 필드 스타일 */
+.searchInput {
+    width: 180px;  /* 기존 250px → 180px로 줄임 */
+    max-width: 100%;
+    padding: 6px 10px; /* 내부 여백 조정 */
+    border: 1px solid #aaa; /* 테두리 색 조정 */
+    border-radius: 6px; /* 둥근 모서리 적용 */
+    font-size: 14px;
+    text-align: center;
+    background-color: white; /* 배경색 유지 */
+    transition: all 0.3s ease-in-out;
+}
+
+/* 🔍 검색창 클릭 시 효과 */
+.searchInput:focus {
+    border-color: #0070f3; /* 클릭 시 파란색 강조 */
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 112, 243, 0.5);
+}
+
+/* ✅ 기존 목록 유지 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* ✅ 페이지 레이아웃 수정 */
+.pageLayout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px; /* ✅ 좌우 여백 추가 */
+    background-color: #F4F4F4; /* ✅ 연한 회색 배경 */
+}
+
+/* ✅ 기존 목록 유지 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* ✅ 페이지 레이아웃 수정 */
+.pageLayout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
