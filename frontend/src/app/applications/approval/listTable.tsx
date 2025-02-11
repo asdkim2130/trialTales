@@ -1,4 +1,5 @@
 import { appList } from "./listData";
+import Link from "next/link";
 
 export function ListTable({ list }: { list: appList }) {
   return (
@@ -35,9 +36,13 @@ export function ListTable({ list }: { list: appList }) {
               <td className="p-3 text-center">{app.applicationDate}</td>
               <td className="p-3 text-center">{app.appStatus}</td>
               <td className="p-3">
-                <button className="text-blue-500 hover:text-blue-700">
-                  상세조회
-                </button>
+                <div>
+                  <Link href="/applications/{applicaionId}">
+                    <button className="text-blue-500 hover:text-blue-700">
+                      상세조회
+                    </button>
+                  </Link>
+                </div>
               </td>
             </tr>
           ))}
