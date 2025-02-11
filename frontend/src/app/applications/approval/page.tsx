@@ -2,7 +2,7 @@
 
 import { appList } from "./listData";
 import { useState } from "react";
-import { ListTable } from "@/app/applications/lists/listTable";
+import { ListTable } from "@/app/applications/approval/listTable";
 
 // interface FilterProps {
 //     filter: "All" | "PENDING" | "APPROVED";
@@ -37,17 +37,18 @@ import { ListTable } from "@/app/applications/lists/listTable";
 //     );
 // };
 
-export default function ApplicationListPage({ filter }: { filter: "All" | "PENDING" | "APPROVED" }) {
-
-    const filteredList = appList.filter((app) =>
-        filter === "All" ? true : app.appStatus === filter
-    );
-    return (
-        <div>
-            {/*<Filter filter={filter} setFilter={setFilter} />*/}
-            <ListTable list={filteredList} />
-        </div>
-    );
+export default function ApplicationListPage({
+  filter,
+}: {
+  filter: "All" | "PENDING" | "APPROVED";
+}) {
+  const filteredList = appList.filter((app) =>
+    filter === "All" ? true : app.appStatus === filter,
+  );
+  return (
+    <div>
+      {/*<Filter filter={filter} setFilter={setFilter} />*/}
+      <ListTable list={filteredList} />
+    </div>
+  );
 }
-
-

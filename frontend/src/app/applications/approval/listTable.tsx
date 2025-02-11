@@ -29,13 +29,15 @@ export function ListTable({ list }: { list: appList }) {
               </td>
               <td className="p-3 text-center">{app.campaign?.campaignName}</td>
               <td className="p-3 text-center">{app.campaign?.status}</td>
-              <td className="p-3 text-center">{app.campaign?.recruitmentLimit}</td>
+              <td className="p-3 text-center">
+                {app.campaign?.recruitmentLimit}
+              </td>
               <td className="p-3 text-center">{app.campaign?.startDate}</td>
               <td className="p-3 text-center">{app.applicationDate}</td>
               <td className="p-3 text-center">{app.appStatus}</td>
               <td className="p-3">
                 <button className="text-blue-500 hover:text-blue-700">
-                  Toggle menu
+                  상세조회
                 </button>
               </td>
             </tr>
