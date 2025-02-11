@@ -1,0 +1,21 @@
+/* ✅ 전체 레이아웃 컨테이너 */
+.layoutContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #F4F4F4; /* 연한 회색 배경 */
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ✅ 메인 콘텐츠 영역 (웹 레이아웃 고정) */
+.content {
+    width: 100%;
+    max-width: 1200px; /* ✅ 웹 버전 고정 */
+    min-height: 800px;
+    padding: 20px;
+    background-color: white; /* ✅ 내부 콘텐츠 배경 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ✅ 그림자 효과 */
+    border-radius: 8px;
+}

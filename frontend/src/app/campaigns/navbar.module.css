@@ -1,0 +1,46 @@
+/* ✅ 네비게이션 바 스타일 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    background-color: #3b82f6; /* 파란색 */
+    padding: 0 1rem;
+    color: white;
+    font-weight: bold;
+}
+
+/* ✅ 로고 스타일 */
+.logo {
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+/* ✅ 메뉴 스타일 */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+/* ✅ 네비게이션 버튼 스타일 */
+.navButton {
+    background-color: white;
+    color: #3b82f6;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.navButton:hover {
+    background-color: #2563eb;
+    color: white;
+}
+
+.active {
+    background-color: #2563eb;
+    color: white;
+}
