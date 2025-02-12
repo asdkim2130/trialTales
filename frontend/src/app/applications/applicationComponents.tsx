@@ -1,25 +1,14 @@
 import React from "react";
-import { campaignSample, campaignData } from "./tempData";
+import { campaignData } from "./tempData";
 import { router } from "next/client";
 import Link from "next/link";
 
-export function ImageBox({ campaignId }: { campaignId: number }) {
-  const campaign = campaignSample.find((c) => c.id === campaignId);
-
-  // 데이터가 없을 경우 처리
-  if (!campaign) {
-    return (
-      <div className="w-full h-56 flex items-center justify-center">
-        Campaign not found
-      </div>
-    );
-  }
-
+export function ImageBox({ campaignSample }: { campaignSample: campaignData }) {
   return (
     <div className="w-full h-56 overflow-hidden">
       <img
-        src={campaign.imageSrc}
-        alt={campaign.campaignName}
+        src={campaignSample.imageSrc}
+        alt={campaignSample.campaignName}
         width={400} // 가로 크기 400px로 설정
         height={400} // 비례에 맞는 높이 설정
         className="w-[400px] h-auto object-cover rounded-t-lg mx-auto"
@@ -28,19 +17,23 @@ export function ImageBox({ campaignId }: { campaignId: number }) {
   );
 }
 
-export function CampaignInfo({ campaign }: { campaign: campaignData }) {
+export function CampaignInfo({
+  campaignSample,
+}: {
+  campaignSample: campaignData;
+}) {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-        {campaign.campaignName}
+        {campaignSample.campaignName}
       </h2>
-      <p className="text-gray-600 mb-2">{campaign.description}</p>
+      <p className="text-gray-600 mb-2">{campaignSample.description}</p>
       <div className="text-sm text-gray-500 mb-2">
-        <p>시작일: {campaign.startDate}</p>
-        <p>종료일: {campaign.endDate}</p>
-        <p>모집인원: {campaign.recruitmentLimit}</p>
+        <p>시작일: {campaignSample.startDate}</p>
+        <p>종료일: {campaignSample.endDate}</p>
+        <p>모집인원: {campaignSample.recruitmentLimit}</p>
       </div>
-      <p className="text-blue-500 font-semibold">{campaign.status}</p>
+      <p className="text-blue-500 font-semibold">{campaignSample.status}</p>
     </div>
   );
 }
