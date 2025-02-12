@@ -15,7 +15,7 @@ export interface Campaigns {
   recruitmentLimit: number;
 }
 
-interface AppList extends Applications {
+export interface AppList extends Applications {
   campaign: Campaigns | null;
 }
 

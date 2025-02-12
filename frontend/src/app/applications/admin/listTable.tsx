@@ -1,7 +1,7 @@
-import { appList } from "./listData";
 import Link from "next/link";
+import { AppList } from "@/app/applications/admin/listData";
 
-export function ListTable({ list }: { list: appList }) {
+export function ListTable(props: { list: AppList[] }) {
   return (
     <div>
       <table className="w-full table-auto border-separate border-spacing-0 bg-white rounded-lg shadow-lg max-w-[1000px] mx-auto">
@@ -18,7 +18,7 @@ export function ListTable({ list }: { list: appList }) {
           </tr>
         </thead>
         <tbody>
-          {appList.map((app) => (
+          {props.list.map((app) => (
             <tr key={app.id} className="border-b">
               <td className="p-3">
                 <img
