@@ -93,7 +93,6 @@ export async function updateNickname(newNickname: string): Promise<boolean> {
 export async function deleteAccount(username: string): Promise<boolean> {
   try {
     const token = (await cookies()).get("token")?.value;
-
     if (!token) {
       console.error("인증 정보 없음: 계정 삭제 불가");
       return false;
@@ -113,9 +112,9 @@ export async function deleteAccount(username: string): Promise<boolean> {
 
     console.log("계정 삭제 성공!");
 
-    // 계정 삭제 후 로그아웃 처리 (쿠키 삭제 후 로그인 페이지로 리디렉트)
+    // 계정 삭제 후 로그아웃 처리
     (await cookies()).delete("token");
-    redirect("/members/login");
+    redirect("/campaigns");
 
     return true;
   } catch (error) {
