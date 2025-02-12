@@ -94,7 +94,7 @@ export default function CampaignList() {
                       {/* 신청 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
                       <button
                         className={`${styles.button} ${styles.buttonApply}`}
-                        onClick={() => router.push(`/applications`)}
+                        onClick={() => router.push(`/applications/new?campaignId=${campaign.id}`)}
                         disabled={isClosed}
                       >
                         신청
