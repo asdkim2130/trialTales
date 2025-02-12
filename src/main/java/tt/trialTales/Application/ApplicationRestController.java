@@ -30,7 +30,7 @@ public class ApplicationRestController {
 
     //조회
     @GetMapping("applications/{applicationId}")
-    public ReadApplicationResponse findApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
+    public ApplicationResponse findApplications(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                 @PathVariable (name = "applicationId") Long id){
 
         Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
