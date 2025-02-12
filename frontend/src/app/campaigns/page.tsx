@@ -74,19 +74,19 @@ export default function CampaignList() {
                                         <p className={styles.cardStatus}>{campaign.status}</p>
 
                                         <div className={styles.buttonContainer}>
-                                            {/* ✅ 신청 버튼 클릭 시 /applications/ 로 이동 */}
+                                            {/* 신청 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
                                             <button
                                                 className={`${styles.button} ${styles.buttonApply}`}
-                                                onClick={() => router.push(`/applications/`)}
+                                                onClick={() => router.push(`/applications/${campaign.id}`)}
                                                 disabled={isClosed}
                                             >
                                                 신청
                                             </button>
 
-                                            {/* ✅ 리뷰 버튼 클릭 시 /reviews/ 로 이동 */}
+                                            {/* 리뷰 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
                                             <button
                                                 className={`${styles.button} ${styles.buttonReview}`}
-                                                onClick={() => router.push(`/reviews/`)}
+                                                onClick={() => router.push(`/reviews/${campaign.id}`)}
                                             >
                                                 리뷰
                                             </button>
