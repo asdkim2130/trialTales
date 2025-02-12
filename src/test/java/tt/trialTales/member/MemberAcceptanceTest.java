@@ -21,7 +21,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest("doraemon1", "doradora123", null, null))
                 .when()
-                .post("/members")
+                .post("/members/signup")
                 .then().log().all()
                 .statusCode(200);
     }
@@ -38,7 +38,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest(username, password, "도라에몽", null))
                 .when()
-                .post("/members")
+                .post("/members/signup")
                 .then().log().all()
                 .statusCode(200);
 
@@ -47,7 +47,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(username, password))
                 .when()
-                .post("/login")
+                .post("/members/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -59,56 +59,49 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void adminDeleteMember() {
+    void getProfileTest() {
         // given
-        final String adminUsername = "admin";
-        final String adminPassword = "admin123";
-        final String memberUsername = "memberToDelete";
-        final String memberPassword = "member123";
+        final String username = "doraemon";
+        final String password = "dora!23";
+        final String nickname = "도라에몽";
 
-        // 회원 가입 (관리자, 일반 사용자)
+        // 회원 가입
         RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new CreateMemberRequest(adminUsername, adminPassword, "관리자", Role.ADMIN))
+                .body(new CreateMemberRequest(username, password, nickname, null))
                 .when()
-                .post("/members")
+                .post("/members/signup")
                 .then().log().all()
                 .statusCode(200);
 
-        RestAssured
+        // 로그인해서 토큰 받기
+        LoginResponse loginResponse = RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new CreateMemberRequest(memberUsername, memberPassword, "탈퇴회원", null))
+                .body(new LoginRequest(username, password))
                 .when()
-                .post("/members")
-                .then().log().all()
-                .statusCode(200);
-
-        // 관리자 로그인 후 토큰 얻기
-        LoginResponse adminLoginResponse = RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new LoginRequest(adminUsername, adminPassword))
-                .when()
-                .post("/login")
+                .post("/members/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
                 .as(LoginResponse.class);
 
-        String adminToken = adminLoginResponse.accessToken();
-
-        // 관리자 회원 탈퇴 요청
-        RestAssured
+        // when: 로그인한 사용자로 프로필 조회
+        MemberProfileResponse profileResponse = RestAssured
                 .given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + adminToken)
-                .param("username", memberUsername)
+                .header("Authorization", "Bearer " + loginResponse.accessToken())
                 .when()
-                .delete("/members")
+                .get("/members/profile")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(200)
+                .extract()
+                .as(MemberProfileResponse.class);
+
+        // then
+        assertThat(profileResponse.username()).isEqualTo(username);
+        assertThat(profileResponse.nickname()).isEqualTo(nickname);
+        assertThat(profileResponse.role()).isEqualTo(Role.USER);
     }
 
     @Test
@@ -123,7 +116,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest(username, password, "사용자", null))
                 .when()
-                .post("/members")
+                .post("/members/signup")
                 .then().log().all()
                 .statusCode(200);
 
@@ -133,7 +126,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(username, password))
                 .when()
-                .post("/login")
+                .post("/members/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -148,59 +141,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .header("Authorization", "Bearer " + userToken)
                 .param("username", username)
                 .when()
-                .delete("/members")
-                .then().log().all()
-                .statusCode(200);
-    }
-
-    @Test
-    void adminUpdateNickname() {
-        // given
-        final String adminUsername = "admin";
-        final String adminPassword = "admin123";
-        final String targetUsername = "userToUpdateNickname";
-
-        // 회원 가입 (관리자, 일반 사용자)
-        RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new CreateMemberRequest(adminUsername, adminPassword, "관리자", Role.ADMIN))
-                .when()
-                .post("/members")
-                .then().log().all()
-                .statusCode(200);
-
-        RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new CreateMemberRequest(targetUsername, "user123", "사용자", null))
-                .when()
-                .post("/members")
-                .then().log().all()
-                .statusCode(200);
-
-        // 관리자 로그인 후 토큰 얻기
-        LoginResponse adminLoginResponse = RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new LoginRequest(adminUsername, adminPassword))
-                .when()
-                .post("/login")
-                .then().log().all()
-                .statusCode(200)
-                .extract()
-                .as(LoginResponse.class);
-
-        String adminToken = adminLoginResponse.accessToken();
-
-        // 관리자 닉네임 수정 요청
-        RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + adminToken)
-                .body("새로운닉네임")
-                .when()
-                .put("/members/nickname")
+                .delete("/members/profile")
                 .then().log().all()
                 .statusCode(200);
     }
@@ -217,7 +158,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest(username, password, "사용자", null))
                 .when()
-                .post("/members")
+                .post("/members/signup")
                 .then().log().all()
                 .statusCode(200);
 
@@ -227,7 +168,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(username, password))
                 .when()
-                .post("/login")
+                .post("/members/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -242,51 +183,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .header("Authorization", "Bearer " + userToken)
                 .body("새로운닉네임")
                 .when()
-                .put("/members/nickname")
+                .put("/members/profile")
                 .then().log().all()
                 .statusCode(200);
-    }
-
-    @Test
-    void getNicknameTest() {
-        // given
-        final String username = "doraemon";
-        final String password = "dora!23";
-
-        // 회원 가입
-        RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new CreateMemberRequest(username, password, "도라에몽", null))
-                .when()
-                .post("/members")
-                .then().log().all()
-                .statusCode(200);
-
-        // 로그인해서 토큰 받기
-        LoginResponse loginResponse = RestAssured
-                .given().log().all()
-                .contentType(ContentType.JSON)
-                .body(new LoginRequest(username, password))
-                .when()
-                .post("/login")
-                .then().log().all()
-                .statusCode(200)
-                .extract()
-                .as(LoginResponse.class);
-
-        // when: 로그인한 사용자로 닉네임 조회
-        String nickname = RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + loginResponse.accessToken())
-                .when()
-                .get("/members/nickname")
-                .then().log().all()
-                .statusCode(200)
-                .extract()
-                .asString();
-
-        // then
-        assertThat(nickname).isEqualTo("도라에몽");
     }
 }
