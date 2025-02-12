@@ -30,5 +30,5 @@ export async function 로그인처리(formData: FormData) {
     });
 
     console.log("로그인 성공, 토큰 저장됨");
-    redirect("/");
+    redirect("/campaigns");
 }
