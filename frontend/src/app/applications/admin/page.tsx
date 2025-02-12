@@ -2,7 +2,7 @@
 
 import { appList } from "./listData";
 import { useState } from "react";
-import { ListTable } from "@/app/applications/approval/listTable";
+import { ListTable } from "@/app/applications/admin/listTable";
 
 // interface FilterProps {
 //     filter: "All" | "PENDING" | "APPROVED";

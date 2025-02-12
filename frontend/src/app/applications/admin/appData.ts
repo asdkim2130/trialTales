@@ -1,4 +1,4 @@
-import { Campaigns } from "@/app/applications/approval/listData";
+import { Campaigns } from "@/app/applications/admin/listData";
 
 interface AppData {
   id: number;
