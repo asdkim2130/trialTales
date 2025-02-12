@@ -2,17 +2,19 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background: linear-gradient(to right, #ffffff, #fde2ff);
+    background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255));
     min-height: 100vh;
+
 }
 
 .title {
     text-align: center;
     font-size: 24px;
-    font-weight: max( 400, bold);
+    font-weight: max( 500, bold);
     font-family: 'Noto Sans KR', sans-serif;
-    color: #0d91f0;
+    color: #0c0909;
     margin-bottom: 20px;
+
 }
 
 .grid {
@@ -24,20 +26,20 @@
 .reviewBox {
     padding: 16px;
     border-radius: 12px;
-    background: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgb(253, 152, 0);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .reviewBox:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgb(12, 9, 9);
 }
 
 .campaignName {
     font-size: 18px;
     font-weight: bold;
-    color: #fde2ff;
+    color: #251818;
 }
 
 .content {
@@ -53,7 +55,7 @@
 
 .date {
     font-size: 14px;
-    color: #666;
+    color: #0c0909;
 }
 
 .buttonContainer {
@@ -69,6 +71,8 @@
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
+    border: none;
+
 }
 
 .editButton {
