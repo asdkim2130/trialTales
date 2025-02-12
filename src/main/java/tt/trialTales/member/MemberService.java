@@ -43,6 +43,15 @@ public class MemberService {
         return new LoginResponse(jwtProvider.createToken(member.getUsername(), member.getRole()));
     }
 
+    // 프로필 조회 메서드
+    public MemberProfileResponse getProfile(Member member) {
+        return new MemberProfileResponse(
+                member.getUsername(),
+                member.getNickname(),
+                member.getRole()
+        );
+    }
+
     // 회원 탈퇴 처리 메서드
     public void deleteMember(String username, Member requestingMember) {
         // 관리자만 다른 사용자를 탈퇴시킬 수 있음
@@ -78,7 +87,7 @@ public class MemberService {
         }
     }
 
-    // 로그인한 사용자의 닉네임 조회 메서드
+    // 사용자의 닉네임 조회 메서드
     public String getNickname(String username) {
         Member member = findByUsername(username);  // 사용자 정보 조회
         return member.getNickname();  // 닉네임 반환
