@@ -1,19 +1,16 @@
 import { redirect } from "next/navigation";
 import {fetchProfile} from "@/app/api";
-import { dummyUser } from "./dummyUser"; // 더미 데이터 가져오기
 import NicknameEditor from "./NicknameEditor";
 import DeleteAccountInput from "./DeleteAccountInput";
 import styles from "./profile.module.css";
 
 export default async function UserProfilePage() {
 
-    const profile = dummyUser; // 더미 데이터 사용
+    const profile = await fetchProfile();
 
-    // const profile = await fetchProfile();
-    //
-    // if (!profile) {
-    //     redirect("/members/login");
-    // }
+    if (!profile) {
+        redirect("/members/login");
+    }
 
     return (
         <div className={styles.container}>

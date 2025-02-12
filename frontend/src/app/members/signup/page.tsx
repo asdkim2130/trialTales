@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { 회원가입처리 } from "./actions";
+import {useState} from "react";
+import {회원가입처리} from "./actions";
 import styles from "./page.module.css";
 
 export default function SignupPage() {
-    const [formData, setFormData] = useState({ username: "", password: "", nickname: "" });
+    const [formData, setFormData] = useState({username: "", password: "", nickname: ""});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
-    // 아이디와 비밀번호가 모두 입력되어야 버튼이 활성화됨
-    const isEnabled =
-        formData.username.trim() !== "" && formData.password.trim() !== "";
+    const isEnabled = formData.username.trim() !== "" && formData.password.trim() !== "";
 
     return (
         <div className={styles.container}>

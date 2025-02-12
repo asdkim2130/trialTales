@@ -59,3 +59,4 @@ export default function NicknameEditor({ currentNickname }: NicknameEditorProps)
         </div>
     );
 }
+

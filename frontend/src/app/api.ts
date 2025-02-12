@@ -2,6 +2,8 @@ import { cookies } from 'next/headers';
 
 interface Profile {
   // 생략
+  username: string;
+  nickname: string;
 }
 
 export async function signIn(): Promise<string> {
@@ -20,17 +22,17 @@ export async function fetchProfile(): Promise<Profile | undefined> {
       return undefined;
     }
 
-    // const response = await fetch('http://localhost:3000/api/me', {
-    //   headers: {
-    //     Authorization: token,
-    //   },
-    // });
-    // if (!response.ok) {
-    //   throw new Error(`Failed to fetch profile: ${response.statusText}`);
-    // }
+    const response = await fetch('http://localhost:8080/members/profile', {
+      headers: {
+        Authorization: token,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch profile: ${response.statusText}`);
+    }
 
-    // return await response.json();
-    return { name: 'test' };
+    return await response.json();
+
   } catch (error) {
     // 요청 타임아웃의 경우
     if (error instanceof DOMException && error.name === 'AbortError') {
