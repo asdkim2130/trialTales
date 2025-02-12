@@ -1,11 +1,12 @@
+/* ✅ 전체 컨테이너 크기 고정 */
 .container {
-    min-height: 100vh;
+    height: 100vh; /* 화면 높이 고정 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: #f9f9f9;
-    padding: 20px;
+    padding: 40px;
 }
 
 .title {
@@ -14,7 +15,7 @@
     margin-bottom: 50px;
 }
 
-/* ✅ 강조된 제목 스타일 */
+/* ✅ 제목 고정 */
 .hotCampaignTitle {
     font-size: 2rem;
     font-weight: 700;
@@ -22,16 +23,12 @@
     color: #ff5733;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
+    position: absolute; /* 🔥 항상 같은 위치 유지 */
+    top: 150px; /* 네비바 아래에 고정 */
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-/* ✅ 4열 그리드 유지 */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    width: 100%;
-    max-width: 900px;
-}
 
 /* ✅ 캠페인 카드 스타일 */
 .card {
@@ -177,27 +174,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* ✅ 버튼이 아래로 가도록 설정 */
-    min-height: 340px; /* ✅ 버튼이 잘리지 않도록 최소 높이 지정 */
+    justify-content: space-between; /* 버튼이 아래로 가도록 설정 */
+    min-height: 340px; /* 버튼이 잘리지 않도록 최소 높이 지정 */
 }
 
-/* 🔍 검색창 스타일 */
-.searchContainer {
-    display: flex;
-    justify-content: flex-end; /* 🔥 오른쪽 정렬 */
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.searchInput {
-    width: 250px;  /* 기존보다 줄인 값 */
-    max-width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
-    text-align: center;
-}
 
 .cardDesc {
     font-size: 14px;
@@ -256,12 +236,11 @@
 
 /* ✅ 페이지 레이아웃 */
 .pageLayout {
+    width: 100%;
+    max-width: 1200px; /* ✅ 전체 레이아웃 크기 고정 */
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    width: 100%;
-    max-width: 1200px;
-    margin: 20px auto;
 }
 
 /* ✅ 세로 배너 (왼쪽)(인기캠페인모아보기) */
@@ -279,6 +258,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-right: 20px;
     transition: transform 0.2s ease-in-out;
+    flex-shrink: 0; /* ✅ 사이즈 줄어들지 않도록 설정 */
 }
 
 .verticalBanner:hover {
@@ -324,26 +304,25 @@
 }
 
 /* 🔍 검색창 컨테이너 */
+/* ✅ 검색창 고정 */
 .searchContainer {
-    display: flex;
-    justify-content: flex-end; /* 🔥 오른쪽 정렬 */
     width: 100%;
-    margin-bottom: 20px;
-    position: relative; /* ✅ 위치 고정 */
-    z-index: 10; /* ✅ 다른 요소보다 위로 유지 */
+    max-width: 400px;
+    position: absolute; /* 🔥 항상 같은 위치 유지 */
+    top: 250px; /* 🔥 제목 아래에 위치 */
+    left: 77%;
+    transform: translateX(-50%);
+    z-index: 10;
 }
 
 /* 🔍 검색 입력 필드 스타일 */
 .searchInput {
-    width: 180px;  /* 기존 250px → 180px로 줄임 */
-    max-width: 100%;
-    padding: 6px 10px; /* 내부 여백 조정 */
-    border: 1px solid #aaa; /* 테두리 색 조정 */
-    border-radius: 6px; /* 둥근 모서리 적용 */
+    width: 220px; /* 기존보다 줄이기 */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 14px;
     text-align: center;
-    background-color: white; /* 배경색 유지 */
-    transition: all 0.3s ease-in-out;
 }
 
 /* 🔍 검색창 클릭 시 효과 */
@@ -359,7 +338,7 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     width: 100%;
-    max-width: 900px;
+    min-width: 900px;
 }
 
 /* ✅ 페이지 레이아웃 수정 */
@@ -374,14 +353,6 @@
     background-color: #F4F4F4; /* ✅ 연한 회색 배경 */
 }
 
-/* ✅ 기존 목록 유지 */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    width: 100%;
-    max-width: 900px;
-}
 
 /* ✅ 페이지 레이아웃 수정 */
 .pageLayout {

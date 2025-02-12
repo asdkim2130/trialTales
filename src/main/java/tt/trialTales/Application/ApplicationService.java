@@ -62,7 +62,7 @@ public class ApplicationService {
 
 
     //신청 조회
-    public ReadApplicationResponse find(Long id, Member loginMember) {
+    public ApplicationResponse find(Long id, Member loginMember) {
 
         if (!loginMember.getRole().equals(Role.ADMIN)) {
             throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");
@@ -71,9 +71,11 @@ public class ApplicationService {
         Application application = queryRepository.findActiveApplication(id).orElseThrow(
                 () -> new NoSuchElementException("해당 신청 내역이 존재하지 않습니다."));
 
+        Member memberInfo = application.getMember();
         Campaign campaign = application.getCampaign();
 
-        return new ReadApplicationResponse(application.getId(),
+        return new ApplicationResponse(application.getId(),
+                memberInfo,
                 campaign,
                 application.getEmail(),
                 application.getSnsUrl(),
@@ -102,7 +104,7 @@ public class ApplicationService {
     }
 
     //승인 상태(PENDING, APPROVED)별로 조회하기
-    public List<ReadApplicationResponse>findPending(Status status, Member loginMember){
+    public List<ReadApplicationResponse> findPending(Status status, Member loginMember){
 
         if (!loginMember.getRole().equals(Role.ADMIN)) {
             throw new NoSuchElementException("신청서 조회에는 관리자 권한이 필요합니다.");

@@ -18,36 +18,32 @@ public class ApplicationQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<Application> findAllByStatus(Status statusFilter){
-        if(statusFilter == null){
+    public List<Application> findAllByStatus(Status statusFilter) {
+        if (statusFilter == null) {
 
             return jpaQueryFactory
                     .selectFrom(application)
                     .fetch();
         }
-        if(statusFilter == Status.PENDING){
-            return jpaQueryFactory
-                    .selectFrom(application)
-                    .where(statusIsPending()
-                            .and(application.isDeleted.isFalse()))
-                    .fetch();
-        }return jpaQueryFactory
+
+        return jpaQueryFactory
                 .selectFrom(application)
-                .where(statusIsApproved()
+                .where(statusFilter(statusFilter)
                         .and(application.isDeleted.isFalse()))
                 .fetch();
+
     }
 
-    private BooleanExpression statusIsPending(){
-        return application.status.eq(Status.PENDING);
-    }
+    private BooleanExpression statusFilter(Status statusFilter) {
+        if (statusFilter == null) {
+            return null;
+        }
 
-    private BooleanExpression statusIsApproved(){
-        return application.status.eq(Status.APPROVED);
+        return application.status.eq(statusFilter);
     }
 
     //Soft Delete
-    public void softDeleteById(Long id){
+    public void softDeleteById(Long id) {
         jpaQueryFactory.update(application)
                 .set(application.deletedAt, LocalDateTime.now())
                 .set(application.isDeleted, true)
@@ -56,20 +52,19 @@ public class ApplicationQueryRepository {
     }
 
     //삭제되지 않은 개별 Application 조회
-    public Optional<Application> findActiveApplication(Long id){
+    public Optional<Application> findActiveApplication(Long id) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(application)
                 .where(application.id.eq(id)
                         .and(application.isDeleted.isFalse()))
                 .fetchOne());
     }
 
-    public List<Application> findAllActiveApplications(Long memberId){
+    public List<Application> findAllActiveApplications(Long memberId) {
         return jpaQueryFactory.selectFrom(application)
                 .where(application.member.id.eq(memberId)
                         .and(application.isDeleted.isFalse()))
                 .fetch();
     }
-
 
 
 }

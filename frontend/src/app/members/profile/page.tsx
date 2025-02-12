@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import {fetchProfile} from "@/app/api";
 import NicknameEditor from "./NicknameEditor";
-import DeleteAccountInput from "./DeleteAccountInput";
+import DeleteAccountInput from "./DeleteAccountInput"
 import styles from "./profile.module.css";
 
 export default async function UserProfilePage() {
