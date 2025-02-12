@@ -14,15 +14,15 @@ export default function Navbar() {
                 <li>
                     <button
                         className={`${styles.navButton} ${pathname === "/" ? styles.active : ""}`}
-                        onClick={() => router.push("/campaigns")}
+                        onClick={() => router.push("/members/login")}
                     >
                         로그인
                     </button>
                 </li>
                 <li>
                     <button
-                        className={`${styles.navButton} ${pathname === "/campaigns" ? styles.active : ""}`}
-                        onClick={() => router.push("/campaigns")}
+                        className={`${styles.navButton} ${pathname === "/" ? styles.active : ""}`}
+                        onClick={() => router.push("/members/profile")}
                     >
                         프로필
                     </button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import  { useState } from "react";
 import { dummyUser } from "./dummyUser"; // 더미 데이터 가져오기
 import styles from "./profile.module.css";
 
