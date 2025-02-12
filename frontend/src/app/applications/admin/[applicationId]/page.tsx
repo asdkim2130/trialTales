@@ -1,6 +1,6 @@
 import { ImageBox, CampaignInfo, ApplicationInfo } from "./detailComponents";
 import React from "react";
-import { applicationSample } from "@/app/applications/[applicationId]/memberData";
+import { applicationSample } from "@/app/applications/admin/[applicationId]/memberData";
 
 export default function DetailApplicationPage() {
   return (
