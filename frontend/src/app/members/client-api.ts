@@ -21,7 +21,9 @@ export async function handleAccountDeletion(username: string) {
     const success = await deleteAccount(username);
     if (success) {
         console.log("계정 삭제 완료!");
+        return true;
     } else {
         console.error("계정 삭제 실패");
+        return false;
     }
 }

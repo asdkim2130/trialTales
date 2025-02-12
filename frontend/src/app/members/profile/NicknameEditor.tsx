@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import styles from "./profile.module.css";
 import {handleNicknameUpdate} from "@/app/members/client-api";
 
@@ -9,9 +9,17 @@ interface NicknameEditorProps {
 }
 
 export default function NicknameEditor({ currentNickname }: NicknameEditorProps) {
-    const [newNickname, setNewNickname] = useState(currentNickname);
+    // 따옴표가 있으면 제거한 상태로 초기값 설정
+    const cleanedNickname = currentNickname.replace(/"/g, "");
+    const [newNickname, setNewNickname] = useState(cleanedNickname);
     const [isEditingNickname, setIsEditingNickname] = useState(false);
-    const [savedNickname, setSavedNickname] = useState(currentNickname);
+    const [savedNickname, setSavedNickname] = useState(cleanedNickname);
+
+    useEffect(() => {
+        // 닉네임이 바뀌었을 때 따옴표 없이 업데이트
+        setNewNickname(cleanedNickname);
+        setSavedNickname(cleanedNickname);
+    }, [currentNickname]);
 
     const handleUpdate = async () => {
         if (newNickname.trim() === "" || newNickname === savedNickname) return;
@@ -21,6 +29,11 @@ export default function NicknameEditor({ currentNickname }: NicknameEditorProps)
             setSavedNickname(newNickname); // 변경된 닉네임 저장
             setIsEditingNickname(false); // 입력 필드 비활성화
         }
+    };
+
+    const handleReset = () => {
+        setNewNickname(savedNickname); // 기존 닉네임으로 복원
+        setIsEditingNickname(false); // 입력 필드 비활성화
     };
 
     return (
@@ -37,7 +50,7 @@ export default function NicknameEditor({ currentNickname }: NicknameEditorProps)
                         placeholder="새 닉네임 입력"
                     />
                     {isEditingNickname && (
-                        <button className={styles.resetButton} onClick={() => setNewNickname(savedNickname)}>
+                        <button className={styles.resetButton} onClick={handleReset}>
                             ↺
                         </button>
                     )}
