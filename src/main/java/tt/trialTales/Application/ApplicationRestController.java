@@ -49,7 +49,7 @@ public class ApplicationRestController {
     }
 
     //승인 상태별 신청서 조회
-    @GetMapping("applications/approval")
+    @GetMapping("applications/admin")
     public List<ReadApplicationResponse>findAppsByStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String bearToken,
                                                          @RequestParam(required = false) Status status){
 
