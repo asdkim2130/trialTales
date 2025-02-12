@@ -90,26 +90,23 @@ export default function CampaignList() {
                     </h2>
                     <p className={styles.cardDesc}>{campaign.description}</p>
                     <p className={styles.cardStatus}>{campaign.status}</p>
-                                        <div className={styles.buttonContainer}>
-                                            {/* 신청 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
-                                            <button
-                                                className={`${styles.button} ${styles.buttonApply}`}
-                                                onClick={() => router.push(`/applications`)}
-                                                disabled={isClosed}
-                                            >
-                                                신청
-                                            </button>
+                    <div className={styles.buttonContainer}>
+                      {/* 신청 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
+                      <button
+                        className={`${styles.button} ${styles.buttonApply}`}
+                        onClick={() => router.push(`/applications`)}
+                        disabled={isClosed}
+                      >
+                        신청
+                      </button>
 
-                                            {/* 리뷰 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
-                                            <button
-                                                className={`${styles.button} ${styles.buttonReview}`}
-                                                onClick={() => router.push(`/reviews`)}
-                                            >
-                                                리뷰
-                                            </button>
-                                        </div>
-                                    </div>
-                        );
+                      {/* 리뷰 버튼 클릭 시 캠페인 ID 포함된 경로로 이동 */}
+                      <button
+                        className={`${styles.button} ${styles.buttonReview}`}
+                        onClick={() => router.push(`/reviews`)}
+                      >
+                        리뷰
+                      </button>
                     </div>
                   </div>
                 );
