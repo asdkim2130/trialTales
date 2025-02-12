@@ -1,53 +1,43 @@
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getUserSession } from "./getUserSession";
 import styles from "./navbar.module.css";
 
 export default function Navbar() {
     const router = useRouter();
-    const pathname = usePathname();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // 로그인 상태 확인 (새로고침해도 유지됨)
     useEffect(() => {
-        const user = localStorage.getItem("user");
-        if (user) {
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
+        // ✅ 서버에서 로그인 상태 가져오기
+        getUserSession().then((session) => {
+            setIsLoggedIn(session.isLoggedIn);
+        });
     }, []);
 
-    // 로그아웃 기능
     const handleLogout = () => {
-        localStorage.removeItem("user"); // 유저 정보 삭제
+        document.cookie = "token=; path=/; max-age=0"; // ✅ 토큰 삭제 (쿠키 만료)
         setIsLoggedIn(false);
-        router.push("/campaigns"); // 로그아웃 후 campaigns 페이지로 이동
+        router.push("/campaigns"); // ✅ 로그아웃 후 campaigns로 이동
     };
 
     return (
         <nav className={styles.navbar}>
             <div className={styles.logo} onClick={() => router.push("/campaigns")}>
-                🚀 trial Tales
+                🚀 Trial Tales
             </div>
             <ul className={styles.menu}>
                 {!isLoggedIn ? (
-                    // 로그인 상태가 아니면 로그인 버튼 표시
                     <li>
-                        <button
-                            className={`${styles.navButton} ${pathname === "/members/login" ? styles.active : ""}`}
-                            onClick={() => router.push("/members/login")}
-                        >
+                        <button className={styles.navButton} onClick={() => router.push("/members/login")}>
                             로그인
                         </button>
                     </li>
                 ) : (
-                    // 로그인 상태면 프로필 + 로그아웃 버튼 표시
                     <>
                         <li>
-                            <button
-                                className={`${styles.navButton} ${pathname === "/members/profile" ? styles.active : ""}`}
-                                onClick={() => router.push("/members/profile")}
-                            >
+                            <button className={styles.navButton} onClick={() => router.push("/members/profile")}>
                                 프로필
                             </button>
                         </li>

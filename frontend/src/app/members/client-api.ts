@@ -2,6 +2,7 @@
 "use client";
 
 import {deleteAccount, updateNickname} from "@/app/api";
+import {useRouter} from "next/navigation";
 
 // 닉네임 변경 요청
 export async function handleNicknameUpdate(newNickname: string) {
@@ -17,11 +18,14 @@ export async function handleNicknameUpdate(newNickname: string) {
 }
 
 // 계정 삭제 요청
-export async function handleAccountDeletion(username: string) {
+
+// 계정 삭제 요청
+export async function handleAccountDeletion(username: string): Promise<boolean> {
     const success = await deleteAccount(username);
+
     if (success) {
         console.log("계정 삭제 완료!");
-        return true;
+        return true; // 🔹 성공 여부 반환
     } else {
         console.error("계정 삭제 실패");
         return false;
