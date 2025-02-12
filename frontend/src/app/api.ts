@@ -89,7 +89,7 @@ export async function updateNickname(newNickname: string): Promise<boolean> {
   }
 }
 
-// 계정 삭제 (서버 액션)
+// 계정삭제 (서버 액션)
 export async function deleteAccount(username: string): Promise<boolean> {
   try {
     const token = (await cookies()).get("token")?.value;
@@ -112,10 +112,10 @@ export async function deleteAccount(username: string): Promise<boolean> {
 
     console.log("계정 삭제 성공!");
 
-    // 계정 삭제 후 로그아웃 처리
+    // 1️⃣ 쿠키 삭제
     (await cookies()).delete("token");
-    redirect("/campaigns");
 
+    // 2️⃣ 클라이언트에서 리디렉트 처리하도록 `true` 반환
     return true;
   } catch (error) {
     console.error("계정 삭제 중 에러 발생:", error);
