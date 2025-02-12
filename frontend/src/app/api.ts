@@ -1,11 +1,14 @@
-import { cookies } from 'next/headers';
+"use server";
+
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface Profile {
   username: string;
   nickname: string;
 }
 
-
+// 로그인 처리
 export async function signIn(username: string, password: string): Promise<string | null> {
   try {
     const response = await fetch("http://localhost:8080/members/login", {
@@ -27,10 +30,10 @@ export async function signIn(username: string, password: string): Promise<string
   }
 }
 
+// 프로필 조회 (서버에서 실행)
 export async function fetchProfile(): Promise<Profile | undefined> {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+    const token = (await cookies()).get("token")?.value;
 
     if (!token) {
       return undefined;
@@ -38,7 +41,7 @@ export async function fetchProfile(): Promise<Profile | undefined> {
 
     const response = await fetch("http://localhost:8080/members/profile", {
       headers: {
-        Authorization: `Bearer ${token}`, // 'Bearer ' 추가
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -48,13 +51,75 @@ export async function fetchProfile(): Promise<Profile | undefined> {
 
     return await response.json();
   } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error("Request timed out");
-    }
-    if (error instanceof TypeError) {
-      throw new Error("Network or parsing error");
+    console.error("프로필 조회 중 에러 발생:", error);
+    return undefined;
+  }
+}
+
+// 닉네임 변경 (서버 액션)
+export async function updateNickname(newNickname: string): Promise<boolean> {
+  try {
+    const token = (await cookies()).get("token")?.value;
+    if (!token) {
+      console.error("인증 정보 없음: 닉네임 변경 불가");
+      return false;
     }
 
-    throw error;
+    const cleanedNickname = newNickname.replace(/"/g, ""); // 따옴표 제거
+
+    const response = await fetch("http://localhost:8080/members/profile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(cleanedNickname),
+    });
+
+    if (!response.ok) {
+      console.error("닉네임 변경 실패:", await response.text());
+      return false;
+    }
+
+    console.log("닉네임 변경 성공!");
+    return true;
+  } catch (error) {
+    console.error("닉네임 변경 중 에러 발생:", error);
+    return false;
+  }
+}
+
+// 계정 삭제 (서버 액션)
+export async function deleteAccount(username: string): Promise<boolean> {
+  try {
+    const token = (await cookies()).get("token")?.value;
+
+    if (!token) {
+      console.error("인증 정보 없음: 계정 삭제 불가");
+      return false;
+    }
+
+    const response = await fetch(`http://localhost:8080/members/profile?username=${username}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error("계정 삭제 실패:", await response.text());
+      return false;
+    }
+
+    console.log("계정 삭제 성공!");
+
+    // 계정 삭제 후 로그아웃 처리 (쿠키 삭제 후 로그인 페이지로 리디렉트)
+    (await cookies()).delete("token");
+    redirect("/members/login");
+
+    return true;
+  } catch (error) {
+    console.error("계정 삭제 중 에러 발생:", error);
+    return false;
   }
 }

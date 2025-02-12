@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./profile.module.css";
+import {handleNicknameUpdate} from "@/app/members/client-api";
 
 interface NicknameEditorProps {
     currentNickname: string;
@@ -10,20 +11,16 @@ interface NicknameEditorProps {
 export default function NicknameEditor({ currentNickname }: NicknameEditorProps) {
     const [newNickname, setNewNickname] = useState(currentNickname);
     const [isEditingNickname, setIsEditingNickname] = useState(false);
+    const [savedNickname, setSavedNickname] = useState(currentNickname);
 
-    const handleNicknameUpdate = () => {
-        if (newNickname.trim() === "") return;
-        console.log("닉네임 변경:", newNickname);
-        setIsEditingNickname(false);
-    };
+    const handleUpdate = async () => {
+        if (newNickname.trim() === "" || newNickname === savedNickname) return;
 
-    const handleNicknameFocus = () => {
-        setIsEditingNickname(true);
-    };
-
-    const handleResetNickname = () => {
-        setNewNickname(currentNickname);
-        setIsEditingNickname(false);
+        const success = await handleNicknameUpdate(newNickname);
+        if (success) {
+            setSavedNickname(newNickname); // 변경된 닉네임 저장
+            setIsEditingNickname(false); // 입력 필드 비활성화
+        }
     };
 
     return (
@@ -35,23 +32,20 @@ export default function NicknameEditor({ currentNickname }: NicknameEditorProps)
                         type="text"
                         value={newNickname}
                         onChange={(e) => setNewNickname(e.target.value)}
-                        onFocus={handleNicknameFocus}
+                        onFocus={() => setIsEditingNickname(true)} // 입력 시 활성화
                         className={`${styles.input} ${isEditingNickname ? styles.activeInput : ""}`}
                         placeholder="새 닉네임 입력"
                     />
                     {isEditingNickname && (
-                        <button className={styles.resetButton} onClick={handleResetNickname}>
+                        <button className={styles.resetButton} onClick={() => setNewNickname(savedNickname)}>
                             ↺
                         </button>
                     )}
                 </div>
-
                 <button
-                    onClick={handleNicknameUpdate}
-                    className={`${styles.saveButton} ${
-                        newNickname !== currentNickname && newNickname.trim() !== "" ? styles.activeButton : ""
-                    }`}
-                    disabled={newNickname === currentNickname || newNickname.trim() === ""}
+                    onClick={handleUpdate}
+                    className={`${styles.saveButton} ${newNickname.trim() !== "" && newNickname !== savedNickname ? styles.activeButton : ""}`}
+                    disabled={newNickname.trim() === "" || newNickname === savedNickname}
                 >
                     저장
                 </button>
@@ -59,4 +53,3 @@ export default function NicknameEditor({ currentNickname }: NicknameEditorProps)
         </div>
     );
 }
-
