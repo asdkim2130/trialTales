@@ -30,7 +30,7 @@ public class ApplicationService {
     }
 
     //신청 생성
-    public ApplicationResponse create(ApplicationRequest request) {
+    public ApplicationResponse create(ApplicationRequest request, Member member) {
 
         Campaign campaign = campaignRepository.findById(request.campaignId()).orElseThrow(
                 () -> new NoSuchElementException("해당 캠페인을 찾을 수 없습니다.")
@@ -39,14 +39,14 @@ public class ApplicationService {
             throw new NoSuchElementException("모집 중인 캠페인만 신청 가능합니다.");
         }
 
-        Member member = memberRepository.findById(request.memberId()).orElseThrow(
+        Member memberInfo = memberRepository.findById(member.getId()).orElseThrow(
                 () -> new NoSuchElementException("유효하지 않은 사용자입니다.")
         );
 
         Application application = new Application(request.email(),
                 request.snsUrl(),
                 campaign,
-                member,
+                memberInfo,
                 request.applicationDate());
 
         applicationRepository.save(application);
