@@ -1,8 +1,8 @@
 "use client";
 
 //use client 포장
-import { ApplicationRequest } from "@/app/applications/new/requestComponent";
-import { submitApplication } from "@/app/applications/new/submitComponent";
+import { ApplicationRequest } from "@/app/applications/new/formComponent";
+import { submitApplication } from "@/app/applications/new/actionComponent";
 
 
 export default function UserSubmit() {

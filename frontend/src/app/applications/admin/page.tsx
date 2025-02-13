@@ -3,7 +3,7 @@
 import { appList } from "./listData";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { ListTableComponent } from "@/app/applications/admin/listTableComponent";
+import { TableComponent } from "@/app/applications/admin/tableComponent";
 
 export default function ApplicationListPage() {
   const [filteredList, setFilteredList] = useState(appList);
@@ -24,7 +24,7 @@ export default function ApplicationListPage() {
 
   return (
     <div>
-      <ListTableComponent list={filteredList} />
+      <TableComponent list={filteredList} />
     </div>
   );
 }

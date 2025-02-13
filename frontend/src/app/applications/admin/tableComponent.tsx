@@ -5,7 +5,7 @@ import { AppList } from "@/app/applications/admin/listData";
 import styles from "@/app/campaigns/page.module.css";
 import {useRouter} from "next/navigation";
 
-export function ListTableComponent(props: { list: AppList[] }) {
+export function TableComponent(props: { list: AppList[] }) {
  const router = useRouter();
 
 
