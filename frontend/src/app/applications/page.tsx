@@ -29,7 +29,8 @@
 // }
 import { redirect } from "next/navigation";
 
+// 자동으로 /campaigns로 이동
 export default function ApplicationsPage() {
-    redirect("/campaigns"); // 자동으로 /campaigns로 이동
+    redirect("/campaigns");
     return null;
 }

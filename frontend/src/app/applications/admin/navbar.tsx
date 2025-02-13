@@ -8,22 +8,24 @@ export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentStatus = searchParams.get("status") || "All";
+  console.log(`pathname: ${pathname}`)
+  console.log(pathname.endsWith("/viewInfo"))
 
   const handleNavigation = (status: "All" | "PENDING" | "APPROVED") => {
     router.push(`${pathname}?status=${status}`);
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4 max-w-[1000px] mx-auto rounded-2xl mt-4">
-      <div className="flex justify-between items-center">
+    <nav className="bg-gray-800 text-white p-4 max-w-[1000px] mx-auto rounded-2xl mt-4 h-20">
+      <div className="flex justify-between items-center h-full">
         <div className="text-lg font-bold">
           <Link href="/applications/admin">
             [관리자모드] 캠페인 신청 현황
           </Link>
         </div>
         <div className="flex space-x-4">
-          {["All", "PENDING", "APPROVED"].map((status) => (
-            <button
+          {!pathname.endsWith("viewInfo") && ["All", "PENDING", "APPROVED"].map((status) => (
+              <button
               key={status}
               onClick={() =>
                 handleNavigation(status as "All" | "PENDING" | "APPROVED")
