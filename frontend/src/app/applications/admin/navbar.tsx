@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Navbar() {
   const router = useRouter();
@@ -15,7 +16,11 @@ export default function Navbar() {
   return (
     <nav className="bg-gray-800 text-white p-4 max-w-[1000px] mx-auto rounded-2xl mt-4">
       <div className="flex justify-between items-center">
-        <div className="text-lg font-bold">[관리자모드] 캠페인 신청 현황</div>
+        <div className="text-lg font-bold">
+          <Link href="/applications/admin">
+            [관리자모드] 캠페인 신청 현황
+          </Link>
+        </div>
         <div className="flex space-x-4">
           {["All", "PENDING", "APPROVED"].map((status) => (
             <button
