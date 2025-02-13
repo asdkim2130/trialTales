@@ -1,98 +1,193 @@
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255));
-    min-height: 100vh;
-
-}
-
-.title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: max( 500, bold);
-    font-family: 'Noto Sans KR', sans-serif;
-    color: #0c0909;
-    margin-bottom: 20px;
-
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.reviewBox {
-    padding: 16px;
-    border-radius: 12px;
-    background: #ffffff;
-    box-shadow: 0 4px 10px rgb(253, 152, 0);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.reviewBox:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgb(12, 9, 9);
-}
-
-.campaignName {
-    font-size: 18px;
-    font-weight: bold;
-    color: #251818;
-}
-
-.content {
-    font-size: 16px;
-    color: #0a0a0a;
-}
-
-.rating {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ff9800;
-}
-
-.date {
-    font-size: 14px;
-    color: #0c0909;
-}
-
-.buttonContainer {
+/* 전체 페이지 스타일 */
+.page-container {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* 제목 스타일 - Extra Bold 적용 */
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 800; /* Extra Bold */
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+/* 리뷰 목록 스타일 */
+.review-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ⭐ 리뷰 박스 크기 강제 고정 */
+.review-box {
+    background-color: #f5f5f5;
+    border: 2px solid #1E90FF;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    width: 320px !important;  /* 너비 고정 */
+    height: 220px !important; /* 높이 고정 */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.review-box h3 {
+    font-size: 1.2rem; /* 기존보다 조금 더 크게 조정 */
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* 리뷰 내용 (최대 2줄까지만 보이게) */
+.review-content {
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 최대 2줄 제한 */
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+}
+
+/* 버튼 컨테이너 중앙 정렬 및 버튼 간격 조정 */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 버튼 스타일 */
+.review-box button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+    margin: 0 10px; /* 버튼 사이 간격 조정 */
+}
+
+.edit-button {
+    background-color: #1E90FF;
+    color: white;
+}
+
+.delete-button {
+    background-color: #FF4500;
+    color: white;
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* 배경을 어둡게 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 창 크기 및 정렬 */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+/* 수정 창 내부 요소 정렬 */
+.modal-content textarea {
+    width: 90%;
+    min-height: 80px;
+    border: 2px solid #1E90FF; /* 파란색 테두리 */
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 1rem;
+    outline: none;
+    resize: none;
+}
+
+/* 모달 제목 스타일 */
+.modal-content h1 {
+    font-size: 1.5rem; /* 기존 제목 크기와 동일 */
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* 버튼 컨테이너 정렬 */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px; /* 버튼 간격 */
     margin-top: 10px;
 }
 
-.editButton, .deleteButton {
-    padding: 8px 12px;
+/* 리뷰 내용 입력창 - 테두리 색 변경 */
+.modal-content textarea {
+    width: 90%;
+    min-height: 80px;
+    border: 2px solid #1E90FF; /* 파란색 테두리 */
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: bold;
+    padding: 8px;
+    font-size: 1rem;
+    outline: none;
+    resize: none;
+}
+
+/* 별점 선택 유지 */
+.modal-content select {
+    width: 100px;
+    padding: 5px;
+    font-size: 1rem;
+}
+
+/* 버튼 컨테이너 */
+.modal-content .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px; /* 버튼 간격을 살짝 띄움 */
+    margin-top: 8px; /* 위쪽 여백 추가 */
+}
+
+/* 수정 저장 버튼 */
+.edit-button {
+    background-color: #1E90FF;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    border: none;
-
+    font-size: 1rem;
 }
 
-.editButton {
-    background: #4caf50;
+/* 취소 버튼 */
+.cancel-button {
+    background-color: #FF4500;
     color: white;
+    padding: 10px 15px;
     border: none;
-}
-
-.editButton:hover {
-    background: #43a047;
-    transform: scale(1.05);
-}
-
-.deleteButton {
-    background: #e53935;
-    color: white;
-    border: none;
-}
-
-.deleteButton:hover {
-    background: #d32f2f;
-    transform: scale(1.05);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
 }
