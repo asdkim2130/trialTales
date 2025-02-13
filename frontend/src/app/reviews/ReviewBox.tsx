@@ -32,13 +32,7 @@ const ReviewBox: React.FC<ReviewBoxProps> = ({ review, onDelete }) => {
                 <button className={styles["edit-button"]} onClick={() => setIsEditing(true)}>수정</button>
                 <button className={styles["delete-button"]} onClick={handleDelete}>삭제</button>
             </div>
-            {isEditing && (
-                <div className={styles["modal-overlay"]}>
-                    <div className={styles["modal-content"]}>
-                        <EditReview review={review} onClose={() => setIsEditing(false)} />
-                    </div>
-                </div>
-            )}
+            {isEditing && <EditReview review={review} onClose={() => setIsEditing(false)} />}
         </div>
     );
 };
