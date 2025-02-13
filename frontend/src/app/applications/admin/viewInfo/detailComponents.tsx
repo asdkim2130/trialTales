@@ -1,6 +1,6 @@
 
 import Link from "next/link";
-import React from "react";
+import React, {useState} from "react";
 import {campaignData} from "@/app/applications/tempData";
 import {detailApp} from "@/app/applications/admin/viewInfo/memberData";
 
@@ -13,6 +13,18 @@ export interface ApplicationProps {
 }
 
 export function ApplicationInfo({ detailAppSample }: ApplicationProps) {
+
+  const [appSample, setAppSample] = useState(detailAppSample);
+
+  const handleApprove = () => {
+
+    const updatedAppSample = { ...appSample, status: "APPROVED" };
+    setAppSample(updatedAppSample);
+
+
+  };
+
+
   return (
     <div className="w-full p-6">
       <table className="w-full table-auto border-separate border-spacing-y-2">
@@ -62,15 +74,16 @@ export function ApplicationInfo({ detailAppSample }: ApplicationProps) {
         </tbody>
       </table>
       <div>
-        <Link href="/campaigns">
+        <Link href="/applications/admin">
           <button
             type="submit"
             className={`w-full mt-4 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 
         ${detailAppSample.status === "APPROVED"
-                ? "bg-gray-400 cursor-not-allowed" // 비활성화일 때
-                : "bg-blue-500 hover:bg-blue-600 text-white" // 활성화일 때
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-blue-500 hover:bg-blue-600 text-white" 
             }`}
             disabled={detailAppSample.status === "APPROVED"}
+            onClick={handleApprove}
           >
             Approve
           </button>
