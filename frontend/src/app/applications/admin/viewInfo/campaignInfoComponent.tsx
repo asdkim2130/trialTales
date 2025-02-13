@@ -2,7 +2,7 @@
 
 import {useSearchParams} from "next/navigation";
 import {campaignSample} from "@/app/applications/tempData";
-import {CampaignInfo, ImageBox} from "@/app/applications/new/components";
+import {CampaignInfo, ImageBox} from "@/app/applications/new/campaignInfoComponent";
 import React from "react";
 
 export default function ClientPage() {

@@ -1,6 +1,6 @@
 import {ApplicationInfo } from "./detailComponents";
 import React from "react";
-import ClientPage from "@/app/applications/admin/viewInfo/campaignComponet";
+import ClientPage from "@/app/applications/admin/viewInfo/campaignInfoComponent";
 import InfoForm from "@/app/applications/admin/viewInfo/aplicationInfoComponent";
 
 
