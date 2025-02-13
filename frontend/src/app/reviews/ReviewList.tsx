@@ -5,6 +5,7 @@ import { Review } from "./interfaces";
 import ReviewBox from "./ReviewBox";
 import { dummyReviews } from "./dummyReviews";
 import { useSearchParams } from 'next/navigation';
+import styles from "./reviews.module.css";
 
 const ReviewList: React.FC = () => {
   const searchParams = useSearchParams();
@@ -24,14 +25,17 @@ const ReviewList: React.FC = () => {
   };
 
   return (
-      <div>
-        {reviews.length > 0 ? (
-            reviews.map((review) => (
-                <ReviewBox key={review.id} review={review} onDelete={handleDelete} />
-            ))
-        ) : (
-            <p>리뷰가 없습니다.</p>
-        )}
+      <div className={styles["page-container"]}>
+        <h1 className={styles["page-title"]}>전체 리뷰 목록</h1>
+        <div className={styles["review-list"]}>
+          {reviews.length > 0 ? (
+              reviews.map((review) => (
+                  <ReviewBox key={review.id} review={review} onDelete={handleDelete} />
+              ))
+          ) : (
+              <p>리뷰가 없습니다.</p>
+          )}
+        </div>
       </div>
   );
 };
