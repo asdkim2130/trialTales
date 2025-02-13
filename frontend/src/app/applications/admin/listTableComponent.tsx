@@ -1,7 +1,14 @@
+'use client';
+
 import Link from "next/link";
 import { AppList } from "@/app/applications/admin/listData";
+import styles from "@/app/campaigns/page.module.css";
+import {useRouter} from "next/navigation";
 
-export function ListTable(props: { list: AppList[] }) {
+export function ListTableComponent(props: { list: AppList[] }) {
+ const router = useRouter();
+
+
   return (
     <div>
       <table className="w-full table-auto border-separate border-spacing-0 bg-white rounded-lg shadow-lg max-w-[1000px] mx-auto">
@@ -37,8 +44,11 @@ export function ListTable(props: { list: AppList[] }) {
               <td className="p-3 text-center">{app.appStatus}</td>
               <td className="p-3">
                 <div>
-                  <Link href="/applications/{applicaionId}">
-                    <button className="text-blue-500 hover:text-blue-700">
+                  <Link href={`/applications/admin/viewInfo/?applicationId=${app.id}&campaignId=${app.campaign?.id}`}>
+                    <button
+                        className={`${styles.button} ${styles.buttonApply}`}
+                        onClick={() => router.push(`/applications/admin/viewInfo/?applicationId=${app.id}&campaignId=${app.campaign?.id}`)}
+                    >
                       상세조회
                     </button>
                   </Link>
