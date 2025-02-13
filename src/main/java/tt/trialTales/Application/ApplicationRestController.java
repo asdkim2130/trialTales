@@ -19,13 +19,13 @@ public class ApplicationRestController {
     }
 
     //생성
-    @PostMapping("applications")
+    @PostMapping("applications/")
     public ApplicationResponse createApplication(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                  @RequestBody ApplicationRequest request){
 
-        loginMemberResolver.resolveMemberFromToken(bearToken);
+        Member member = loginMemberResolver.resolveMemberFromToken(bearToken);
 
-        return applicationService.create(request);
+        return applicationService.create(request, member);
     }
 
     //조회
