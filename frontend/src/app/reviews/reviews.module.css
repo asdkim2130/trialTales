@@ -1,98 +1,81 @@
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background: linear-gradient(to right, rgb(255, 255, 255), rgb(255, 255, 255));
-    min-height: 100vh;
-
-}
-
-.title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: max( 500, bold);
-    font-family: 'Noto Sans KR', sans-serif;
-    color: #0c0909;
-    margin-bottom: 20px;
-
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.reviewBox {
-    padding: 16px;
-    border-radius: 12px;
-    background: #ffffff;
-    box-shadow: 0 4px 10px rgb(253, 152, 0);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.reviewBox:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgb(12, 9, 9);
-}
-
-.campaignName {
-    font-size: 18px;
-    font-weight: bold;
-    color: #251818;
-}
-
-.content {
-    font-size: 16px;
-    color: #0a0a0a;
-}
-
-.rating {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ff9800;
-}
-
-.date {
-    font-size: 14px;
-    color: #0c0909;
-}
-
-.buttonContainer {
+.page-container {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
 }
 
-.editButton, .deleteButton {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 14px;
+/* 제목 스타일 */
+.page-title {
+    font-size: 2.5rem;
     font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* 리뷰 목록 스타일 */
+.review-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-content: center;
+    width: 80%;
+}
+
+/* 리뷰 박스 스타일 */
+.review-box {
+    background-color: #f5f5f5;
+    border: 2px solid #1E90FF;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: left;
+    max-width: 300px;
+    overflow: hidden;
+    white-space: normal;
+}
+
+.review-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.review-box p {
+    margin: 0 0 5px 0;
+    color: #555;
+    line-height: 1.5;
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.review-box small {
+    color: #777;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* 버튼 스타일 */
+.review-box button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    border: none;
-
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
 }
 
-.editButton {
-    background: #4caf50;
+.edit-button {
+    background-color: #1E90FF;
     color: white;
-    border: none;
+    margin-right: 5px;
 }
 
-.editButton:hover {
-    background: #43a047;
-    transform: scale(1.05);
-}
-
-.deleteButton {
-    background: #e53935;
+.delete-button {
+    background-color: #FF4500;
     color: white;
-    border: none;
-}
-
-.deleteButton:hover {
-    background: #d32f2f;
-    transform: scale(1.05);
 }

@@ -1,15 +1,13 @@
+import React from "react";
 import ReviewList from "./ReviewList";
-import { fetchReviews } from "@/app/reviews/reviewService";
 
-export default async function ReviewsPage() {
-  const reviews = await fetchReviews();
+const ReviewsPage = () => {
+    return (
+        <div>
+            <h1>전체 리뷰 목록</h1>
+            <ReviewList />
+        </div>
+    );
+};
 
-  return (
-    <div>
-      {reviews.map((r) => (
-        <div></div>
-      ))}
-      <ReviewList reviews={reviews} />
-    </div>
-  );
-}
+export default ReviewsPage;
