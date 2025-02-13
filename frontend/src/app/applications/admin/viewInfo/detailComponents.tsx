@@ -12,41 +12,6 @@ export interface ApplicationProps {
  detailAppSample: detailApp;
 }
 
-// export function ImageBox({ campaignSample }: CampaignProps) {
-//   return (
-//     <div className="w-full h-auto overflow-hidden">
-//       <img
-//         src={campaignSample.imageSrc}
-//         alt={campaignSample.campaignName}
-//         width={400} // 가로 크기 400px로 설정
-//         height={400} // 비례에 맞는 높이 설정
-//         className="w-[400px] h-auto object-cover rounded-t-lg mx-auto"
-//       />
-//     </div>
-//   );
-// }
-//
-// export function CampaignInfo({ campaignSample }: CampaignProps) {
-//   return (
-//     <div className="p-6">
-//       <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-//         {campaignSample.campaignName}
-//       </h2>
-//       <p className="text-gray-600 mb-2">
-//         {campaignSample.description}
-//       </p>
-//       <div className="text-sm text-gray-500 mb-2">
-//         <p>시작일: {campaignSample.startDate}</p>
-//         <p>종료일: {campaignSample.endDate}</p>
-//         <p>모집인원: {campaignSample.recruitmentLimit}</p>
-//       </div>
-//       <p className="text-blue-500 font-semibold">
-//         {campaignSample.status}
-//       </p>
-//     </div>
-//   );
-// }
-
 export function ApplicationInfo({ detailAppSample }: ApplicationProps) {
   return (
     <div className="w-full p-6">
@@ -100,7 +65,12 @@ export function ApplicationInfo({ detailAppSample }: ApplicationProps) {
         <Link href="/campaigns">
           <button
             type="submit"
-            className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full mt-4 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 
+        ${detailAppSample.status === "APPROVED"
+                ? "bg-gray-400 cursor-not-allowed" // 비활성화일 때
+                : "bg-blue-500 hover:bg-blue-600 text-white" // 활성화일 때
+            }`}
+            disabled={detailAppSample.status === "APPROVED"}
           >
             Approve
           </button>
