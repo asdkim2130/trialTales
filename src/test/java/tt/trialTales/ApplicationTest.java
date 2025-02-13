@@ -53,7 +53,7 @@ public class ApplicationTest {
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest(adminUsername, adminPassword, "nickname", Role.ADMIN))
                 .when()
-                .post("members")
+                .post("members/signup")
                 .then().log().all()
                 .statusCode(200);
 
@@ -62,7 +62,7 @@ public class ApplicationTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(adminUsername, adminPassword))
                 .when()
-                .post("login")
+                .post("members/login")
                 .then().log().all()
                 .statusCode(200);
 
@@ -72,7 +72,7 @@ public class ApplicationTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(adminUsername, adminPassword))
                 .when()
-                .post("/login")
+                .post("/members/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -237,7 +237,7 @@ public class ApplicationTest {
                 .header("Authorization", "Bearer " + token)
                 .param("status", Status.APPROVED)
                 .when()
-                .get("applications/approval")
+                .get("applications/admin?status=APPROVED")
                 .then().log().all()
                 .statusCode(200)
                 .extract()
@@ -271,8 +271,10 @@ public class ApplicationTest {
         Long applicationId = getApplicationId(token, memberId, campaignId);
         getApplicationId(token, memberId, campaignId);
         getApplicationId(token, memberId, campaignId);
+        assertThat(applicationId).isEqualTo(1);
+        System.out.println("applicationId" + applicationId);
 
-        //삭제
+        //soft delete
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
@@ -282,12 +284,15 @@ public class ApplicationTest {
                 .then().log().all()
                 .statusCode(200);
 
-        //삭제 확인 조회
+        //soft delete 확인 조회
         List<ReadApplicationResponse> applicationsList = getApplicationsList(token, memberId);
 
-        assertThat(applicationsList.size()).isEqualTo(2);
-    }
+        assertThat(applicationsList.size()).isEqualTo(3);
+//        "deletedAt": "2025-02-13T16:25:41.167628",
+//        "isDeleted": true
+//        Json 로그확인
 
+    }
 
 
     // 테스트 함수 메서드 분리
@@ -297,7 +302,7 @@ public class ApplicationTest {
                 .contentType(ContentType.JSON)
                 .body(new CreateMemberRequest(adminUsername, adminPassword, "nickname", Role.ADMIN))
                 .when()
-                .post("members")
+                .post("members/signup")
                 .then().log().all()
                 .statusCode(200);
         return validatableResponse;
@@ -309,7 +314,7 @@ public class ApplicationTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(adminUsername, adminPassword))
                 .when()
-                .post("login")
+                .post("members/login")
                 .then().log().all()
                 .statusCode(200);
 
@@ -323,7 +328,7 @@ public class ApplicationTest {
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest(adminUsername, adminPassword))
                 .when()
-                .post("/login")
+                .post("members/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract()

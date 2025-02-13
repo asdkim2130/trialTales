@@ -98,7 +98,9 @@ public class ApplicationService {
                         application.getEmail(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
-                        application.getStatus()
+                        application.getStatus(),
+                        application.getDeletedAt(),
+                        application.isDeleted()
                 ))
                 .toList();
     }
@@ -117,7 +119,9 @@ public class ApplicationService {
                         application.getEmail(),
                         application.getSnsUrl(),
                         application.getApplicationDate(),
-                        application.getStatus()
+                        application.getStatus(),
+                        application.getDeletedAt(),
+                        application.isDeleted()
                 ))
                 .toList();
     }
@@ -135,7 +139,7 @@ public class ApplicationService {
                 () -> new NoSuchElementException("해당 신청 내용이 존재하지 않습니다.")
         );
 
-        queryRepository.softDeleteById(id);
+        queryRepository.softDeleteById(application.getId());
     }
 
 

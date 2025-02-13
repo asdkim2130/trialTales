@@ -9,5 +9,7 @@ public record ReadApplicationResponse(Long id,
                                       String email,
                                       String snsUrl,
                                       LocalDateTime applicationDate,
-                                      Status status) {
+                                      Status status,
+                                      LocalDateTime deletedAt,
+                                      Boolean isDeleted) {
 }
