@@ -19,7 +19,7 @@ public class ApplicationRestController {
     }
 
     //생성
-    @PostMapping("applications/")
+    @PostMapping("applications")
     public ApplicationResponse createApplication(@RequestHeader(HttpHeaders.AUTHORIZATION)String bearToken,
                                                  @RequestBody ApplicationRequest request){
 
